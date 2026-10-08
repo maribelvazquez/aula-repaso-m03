@@ -1,0 +1,428 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El semáforo de la ENR · 3.3.3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#faf5ec; --surface:#ffffff; --surface-2:#f3ede1; --line:#e4dccd;
+  --fg:#1b1b1e; --muted:#5b5f62; --carbon:#393e41;
+  --verde:#64c27b; --verde-claro:#87d895; --verde-tint:#e3f4e6;
+  --morado:#a663cc; --morado-tint:#f1e6f8;
+  --turquesa:#80bcb5; --amarillo:#faa916; --coral:#ff8361; --coral-tint:#ffe9e2;
+  --no:#b9b2a5; --on-color:#1b1b1e; --on-dark:#ffffff;
+  --f-display:"Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:18px;padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(21px,3vw,27px);font-weight:800}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.hl{background:var(--verde);color:var(--on-color);padding:0 .18em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{max-width:68ch;color:var(--carbon);font-size:16px}
+.membrete{height:3px;background:var(--verde-claro);border:0;margin:14px 0 0}
+header.top{display:grid;gap:12px;padding-block:8px 18px}
+nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding-block:8px;margin-bottom:8px;scrollbar-width:thin}
+nav.idx a{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--fg);text-decoration:none;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+nav.idx a:hover{border-color:var(--morado)}
+section{padding-block:30px 6px;display:grid;gap:14px;scroll-margin-top:60px}
+.sub{color:var(--muted);max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.num{font-variant-numeric:tabular-nums}
+.ref{font-size:12px;color:var(--muted);font-weight:600}
+.mini{font-size:13px}
+/* Puertas */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.door{appearance:none;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;cursor:pointer;position:relative}
+.door:hover{border-color:var(--carbon)}
+.door[aria-pressed="true"]{outline:3px solid var(--morado);outline-offset:-1px}
+.door .n{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1}
+.door .t{font-family:var(--f-display);font-weight:700;font-size:15px}
+.door .d{font-size:13px;color:var(--muted)}
+.door .tag{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--surface-2)}
+.door.debe .tag{background:var(--amarillo);color:var(--on-color)}
+.ritmo{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-family:var(--f-display);font-weight:800;font-size:22px}
+.ritmo span.lbl{font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--muted)}
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.extra .card{display:grid;gap:6px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;justify-self:start}
+.pill.star{background:var(--amarillo);color:var(--on-color)}
+.pill.warn{background:var(--coral);color:var(--on-color)}
+/* Matriz */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+thead th{font-family:var(--f-display);font-size:12.5px;font-weight:700;background:var(--surface-2);position:sticky;top:0}
+thead th button{all:unset;cursor:pointer;display:grid;gap:2px}
+thead th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+thead th small{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:11px}
+th.col-x{background:var(--coral-tint)}
+tbody th{font-weight:600;font-size:14px;white-space:nowrap;border-left:6px solid var(--fam,var(--line))}
+tbody th button{all:unset;cursor:pointer}
+tbody th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+td.cell{text-align:center;padding:5px}
+.c{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:74px;min-height:30px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.c:focus-visible{outline:2px solid var(--morado);outline-offset:2px}
+.c.si{background:var(--verde);color:var(--on-color)}
+.c.debe{background:var(--amarillo);color:var(--on-color)}
+.c.medio{border:2px dashed var(--carbon);color:var(--fg)}
+.c.no{color:var(--no);font-weight:600}
+tr.fam-sep th, tr.fam-sep td{border-top:2px solid var(--line)}
+table.dim tbody td.cell:not(.on) .c{opacity:.28}
+table.dim thead th.on{background:var(--morado);color:var(--on-dark)}
+table.dim thead th.on small{color:var(--on-dark)}
+tbody tr.rowon th{background:var(--morado-tint)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+.legend .c{min-width:auto;cursor:default}
+.detail{border-left:6px solid var(--morado)}
+.detail h3{margin-bottom:4px}
+.detail ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+/* Asistente */
+.wiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.wiz{grid-template-columns:1fr}}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
+legend{font-family:var(--f-display);font-weight:700;font-size:14px;margin-bottom:6px}
+legend b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--carbon);color:var(--bg);font-size:12px;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{cursor:pointer;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+.chips label i{width:9px;height:9px;border-radius:50%;background:var(--fam,var(--line))}
+.chips input:checked + label{background:var(--morado);border-color:var(--morado);color:var(--on-dark)}
+.chips input:focus-visible + label{outline:2px solid var(--morado);outline-offset:2px}
+.verdict{display:grid;gap:10px;align-content:start}
+.vbadge{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:22px;padding:4px 14px;border-radius:8px}
+.vbadge.si{background:var(--verde);color:var(--on-color)}
+.vbadge.debe{background:var(--amarillo);color:var(--on-color)}
+.vbadge.no{background:var(--carbon);color:var(--bg)}
+.vbadge.medio{border:2px dashed var(--carbon)}
+.req{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.req li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:14px}
+.req li::before{content:"✓";font-weight:800;color:var(--verde)}
+.note{font-size:13.5px;background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.note.warn{background:var(--coral-tint)}
+/* Requisitos */
+table.req-t{min-width:980px;font-size:13px}
+table.req-t td{vertical-align:top}
+table.req-t tbody th{border-left:0;white-space:normal;min-width:150px;font-size:13px}
+.yes{font-weight:700}
+.y::before{content:"Sí · ";font-weight:800;color:var(--verde)}
+.n0{color:var(--muted)}
+.colfilter{display:flex;flex-wrap:wrap;gap:6px}
+.colfilter button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.colfilter button[aria-pressed="true"]{background:var(--carbon);color:var(--bg);border-color:var(--carbon)}
+/* Transferencias */
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;counter-reset:t}
+.tl .card{display:grid;gap:6px;border-top:5px solid var(--amarillo)}
+.tl .k{font-family:var(--f-display);font-weight:800;font-size:18px}
+/* Trampas */
+.traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.trap{display:grid;gap:6px;border:2px dashed var(--carbon);background:var(--surface)}
+.trap h3{font-size:15px}
+/* Práctica */
+.quiz{display:grid;gap:12px}
+.qbox{display:grid;gap:12px}
+.qtext{font-size:17px;font-weight:600;max-width:70ch}
+.qbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:9px 18px;border-radius:8px;border:0;cursor:pointer;background:var(--morado);color:var(--on-dark)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.qfb{font-size:14.5px;border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.qfb b.ok{color:var(--verde)} .qfb b.bad{color:var(--coral)}
+.score{font-family:var(--f-display);font-weight:800}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted);display:grid;gap:6px;max-width:80ch}
+@media (prefers-reduced-motion:no-preference){ .c,.door,.chips label{transition:background .15s, opacity .15s, border-color .15s} }
+
+
+/* ---- Frente 4: piezas nuevas ---- */
+.topbar{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:9px 16px;background:#1b1b1e;color:#fff;font:600 13px/1.3 Inter,Arial,sans-serif}
+.topbar a{color:#fff}
+.topbar .sp{flex:1}
+.topbar button{font:inherit;font-size:12px;color:#fff;background:transparent;border:1px solid #6b6f72;border-radius:999px;padding:4px 10px;cursor:pointer}
+.topbar button[aria-pressed="true"]{background:var(--verde);color:#1b1b1e;border-color:var(--verde)}
+body.proj{font-size:18px}
+body.proj .wrap{max-width:1280px}
+body.proj .qtext{font-size:24px}
+body.proj .sorter .it{font-size:17px}
+body.proj table{font-size:16px}
+.rec{transition:filter .15s}
+body.recitar .rec:not(.shown){filter:blur(6px);cursor:pointer;user-select:none}
+.hint-rec{display:none}
+body.recitar .hint-rec{display:block}
+/* ganchos */
+.hooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.hook{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--verde);border-radius:var(--r);padding:12px 14px;display:grid;gap:4px;align-content:start}
+.hook .n{font-family:var(--f-display);font-weight:800;font-size:38px;line-height:1}
+.hook .t{font-family:var(--f-display);font-weight:700;font-size:14px}
+.hook .d{font-size:12.5px;color:var(--muted)}
+.hook.warn{border-top-color:var(--coral)}
+.col .hooks{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+.col .hook .n{font-size:30px}
+.hook.star{border-top-color:var(--amarillo)}
+/* tablas de contenido */
+table.t2{min-width:720px;font-size:14px}
+table.t2 td,table.t2 th{vertical-align:top}
+table.t2 tbody th{border-left:0;white-space:normal;min-width:170px;font-size:14px}
+td.dif{background:var(--coral-tint)}
+td.ok{background:var(--verde-tint)}
+td.na{color:var(--no)}
+td.lv-a,span.lv-a{background:var(--coral-tint);font-weight:700}
+td.lv-ma,span.lv-ma{background:color-mix(in srgb,var(--coral) 12%,var(--surface));font-weight:600}
+td.lv-m,span.lv-m{background:color-mix(in srgb,var(--amarillo) 22%,var(--surface))}
+td.lv-mb,span.lv-mb{background:color-mix(in srgb,var(--amarillo) 9%,var(--surface))}
+td.lv-b,span.lv-b{background:var(--verde-tint)}
+td.chg{outline:2px solid var(--carbon);outline-offset:-3px}
+span.lv-a,span.lv-m,span.lv-mb,span.lv-b,span.lv-ma{padding:1px 6px;border-radius:5px}
+.tick{font-weight:800;color:var(--verde)}
+.cross{font-weight:800;color:var(--coral)}
+.tl .k{justify-self:start;font-size:13px}
+.k{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:var(--surface-2);margin-right:4px}
+.k.g{background:var(--verde);color:var(--on-color)} .k.m{background:var(--morado);color:var(--on-dark)} .k.a{background:var(--amarillo);color:var(--on-color)} .k.c{background:var(--coral);color:var(--on-color)} .k.t{background:var(--turquesa);color:var(--on-color)}
+.lit{font-style:italic}
+.lit::before{content:"«"} .lit::after{content:"»"}
+.regla{display:grid;gap:4px;border-left:6px solid var(--verde);background:var(--surface);border-radius:8px;padding:10px 14px}
+.regla b{font-family:var(--f-display)}
+.crit{font-size:12px;color:var(--muted);font-style:italic}
+/* sorter */
+.sorter{display:grid;gap:8px}
+.sorter .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.sorter .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px}
+@media (max-width:700px){.sorter .it{grid-template-columns:1fr}}
+.sorter .opts{display:flex;flex-wrap:wrap;gap:6px}
+.sorter .opts button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer}
+.sorter .opts button:disabled{cursor:default;opacity:.55}
+.sorter .opts button.right{background:var(--verde);color:var(--on-color);opacity:1;border-color:var(--verde)}
+.sorter .opts button.wrong{background:var(--coral);color:var(--on-color);opacity:1;border-color:var(--coral)}
+.sorter .fb{grid-column:1/-1;font-size:13.5px;color:var(--carbon)}
+.sorter .fb .ref{margin-left:6px}
+.sorter .it.done{border-color:var(--carbon)}
+/* ronda */
+.ronda{display:grid;gap:12px}
+.ronda .head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ronda .opts{display:grid;gap:8px}
+.ronda .op{all:unset;cursor:pointer;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.ronda .op b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface-2);font-family:var(--f-display)}
+.ronda .op.sel{outline:3px solid var(--morado);outline-offset:-2px}
+.ronda .op.right{background:var(--verde-tint);border-color:var(--verde)}
+.ronda .op.right b{background:var(--verde);color:var(--on-color)}
+.ronda .op.wrong{background:var(--coral-tint);border-color:var(--coral)}
+.ronda .op:focus-visible{outline:2px solid var(--morado)}
+.ronda .pat{font-size:12px;font-weight:700;color:var(--muted)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--carbon)}
+/* línea de tiempo */
+.tline{display:grid;gap:0;counter-reset:st}
+.tline .st{display:grid;grid-template-columns:44px 1fr;gap:12px;position:relative;padding-bottom:14px}
+.tline .st::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--verde);color:var(--on-color);font-family:var(--f-display);font-weight:800;z-index:1}
+.tline .st::after{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--line)}
+.tline .st:last-child::after{display:none}
+.tline .st .card{display:grid;gap:4px;padding:10px 14px}
+.tline .st.alert::before{background:var(--coral)}
+/* asistente */
+.steps{display:grid;gap:12px}
+.qstep{display:grid;gap:8px}
+.qstep[hidden]{display:none}
+.yn{display:flex;gap:8px;flex-wrap:wrap}
+.yn button{font:inherit;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--morado);color:var(--on-dark);border-color:var(--morado)}
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px dashed var(--carbon);background:var(--surface);color:var(--fg);cursor:pointer;text-align:left}
+.cases button[aria-pressed="true"]{background:var(--carbon);color:var(--bg)}
+.vbadge.c1{background:var(--verde);color:var(--on-color)}
+.vbadge.c2{background:var(--verde-claro);color:var(--on-color)}
+.vbadge.c3{background:var(--amarillo);color:var(--on-color)}
+.vbadge.c4{background:var(--coral);color:var(--on-color)}
+.vbadge.c5{background:var(--surface-2);border:2px dashed var(--carbon)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.col h3{margin-bottom:6px}
+.col ol,.col ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.col.gafi{border-top:5px solid var(--morado)} .col.bas{border-top:5px solid var(--turquesa)} .col.dcg{border-top:5px solid var(--amarillo)}
+@media (max-width:700px){table.t2{min-width:600px;font-size:13px} table.t2 tbody th{min-width:110px} .hook .n{font-size:30px}}
+@media print{.topbar,nav.idx,.btn,.yn,.cases,.sorter .opts{display:none!important} body{background:#fff} .card{break-inside:avoid}}
+
+</style>
+</head>
+<body>
+<nav class="topbar" aria-label="Repaso"><b style="font-family:Montserrat,Arial,sans-serif;letter-spacing:.04em">Módulo 3 · Repaso</b><a href="../index.html">← Todos los temas</a><span class="sp"></span><button type="button" id="b-proj" aria-pressed="false">Modo proyección</button><button type="button" id="b-rec" aria-pressed="false">Modo recitar</button><button type="button" id="b-print">Imprimir</button></nav>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">360Educa · Módulo 3 · Repaso de resultados · Certificación CNBV PLD/FT · Temario agosto 2026</div>
+  <h1>3.3.3 · <span class="hl">El semáforo de la ENR 2023</span></h1>
+  <p class="lede">Qué nivel de riesgo tiene cada sector, cada actividad vulnerable y cada uno de los 37 factores, contra 2020 y en sus dos escalas. Construido sobre los reactivos que el grupo falló: tablas cruzadas y niveles mal combinados.</p>
+  <p class="mini sub hint-rec">Modo recitar: las celdas difuminadas se descubren con un toque. Dilas en voz alta antes de tocar.</p>
+  <hr class="membrete">
+</header>
+<nav class="idx" aria-label="Secciones"><a href="#numeros">En números</a><a href="#escalas">Dos escalas</a><a href="#sf">Sistema financiero</a><a href="#av">Actividades vulnerables</a><a href="#factores">37 factores</a><a href="#trampas">Trampas</a><a href="#practica">Ronda 3.3.3</a></nav>
+
+<section id="numeros">
+  <h2>La ENR 2023 en números</h2>
+  <p class="sub">El grupo acertó 80 % en 3.3.3, pero los reactivos de tablas (qué sector o qué factor tiene qué nivel) bajaron a 59–76 %. Activa Modo recitar.</p>
+  <div class="hooks">
+    <div class="hook star"><span class="n rec">37</span><span class="t">Factores de riesgo</span><span class="d">En 5 rubros: régimen · LD · FT · FPADM · emergentes.</span><span class="ref">Cap. II</span></div>
+    <div class="hook"><span class="n rec">26 · 26 · 37</span><span class="t">ENR 2016 · 2020 · 2023</span><span class="d">2016: 5 rubros · 2020: 6 rubros · 2023: 5 rubros.</span><span class="ref">Cap. II</span></div>
+    <div class="hook"><span class="n rec">12</span><span class="t">Apartados</span><span class="d">Del I Introducción al XII Plan de acción preliminar.</span><span class="ref">Cap. I</span></div>
+    <div class="hook"><span class="n rec">UIF</span><span class="t">Autoridad coordinadora</span><span class="d">Ejercicio de responsabilidad compartida con todas las autoridades.</span><span class="ref">Cap. I</span></div>
+    <div class="hook warn"><span class="n rec">4 + 4</span><span class="t">Niveles en dos escalas</span><span class="d">Sectores: bajo, medio-bajo, medio, alto. Riesgo integral: bajo, medio, medio-alto, alto.</span><span class="ref">Caps. IV y XI</span></div>
+    <div class="hook"><span class="n rec">18</span><span class="t">Sectores de AV evaluados</span><span class="d">24,737,834 avisos de 2019 al 1S 2022.</span><span class="ref">Cap. IV</span></div>
+    <div class="hook warn"><span class="n rec" style="font-size:26px">Medio-alto</span><span class="t">Riesgo integral de LD</span><span class="d">FT y FPADM: bajo.</span><span class="ref">Cap. XI</span></div>
+  </div>
+</section>
+
+<section id="escalas">
+  <h2>Dos escalas que no se mezclan</h2>
+  <p class="sub">«Medio-bajo» sólo existe en la matriz de sectores; «medio-alto», sólo en la evaluación integral. Si una opción combina mal la escala, es distractor.</p>
+  <div class="two">
+    <div class="card col gafi"><h3>Matriz de riesgo sectorial · sujetos obligados</h3>
+      <div class="tablewrap"><table class="t2" style="min-width:0"><thead><tr><th>Calificación</th><th>Nivel</th></tr></thead><tbody>
+       <tr><th>91 a 100 %</th><td class="lv-a rec">Alto</td></tr><tr><th>81 a 90 %</th><td class="lv-m rec">Medio</td></tr><tr><th>51 a 80 %</th><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>1 a 50 %</th><td class="lv-b rec">Bajo</td></tr></tbody></table></div>
+      <p class="mini">Factores que reflejan el riesgo inherente, que lo intensifican y que lo mitigan.</p><span class="ref">Cap. IV</span></div>
+    <div class="card col bas"><h3>Evaluación integral · riesgos del país</h3>
+      <div class="tablewrap"><table class="t2" style="min-width:0"><thead><tr><th>Calificación</th><th>Nivel</th></tr></thead><tbody>
+       <tr><th>7 a 9</th><td class="lv-a rec">Alto</td></tr><tr><th>5 a 7</th><td class="lv-ma rec">Medio-alto</td></tr><tr><th>3 a 5</th><td class="lv-m rec">Medio</td></tr><tr><th>0 a 3</th><td class="lv-b rec">Bajo</td></tr></tbody></table></div>
+      <p class="mini">Riesgo de LD = 0.8 × amenazas de LD + 0.1 × vulnerabilidades de LD + 0.1 × vulnerabilidades del régimen.</p><span class="ref">Cap. XI</span></div>
+  </div>
+  <div class="tablewrap"><table class="t2"><thead><tr><th></th><th>Amenazas</th><th>Vulnerabilidades</th></tr></thead><tbody>
+    <tr><th>Primera dimensión</th><td class="rec"><b>Grado de impacto</b></td><td class="rec"><b>Grado de facilitación</b></td></tr>
+    <tr><th>Segunda dimensión</th><td class="rec"><b>Probabilidad de ocurrencia</b></td><td class="rec"><b>Probabilidad de explotación</b></td></tr>
+    <tr><th>Escala de cada dimensión</th><td class="rec" colspan="2">0 a 3 bajo · 3 a 6 medio · 6 a 9 alto. Probabilidad: intensificadores menos mitigantes.</td></tr>
+    <tr><th>Valoración</th><td class="rec">(1/9) × impacto × ocurrencia</td><td class="rec">(1/9) × facilitación × explotación</td></tr>
+  </tbody></table></div>
+  <div class="tablewrap"><table class="t2"><thead><tr><th>Riesgo</th><th>Nivel integral 2023</th></tr></thead><tbody>
+    <tr><th>Lavado de dinero</th><td class="lv-ma rec">Medio-alto</td></tr><tr><th>Financiamiento al terrorismo</th><td class="lv-b rec">Bajo</td></tr>
+    <tr><th>Financiamiento a la proliferación de ADM</th><td class="lv-b rec">Bajo</td></tr><tr><th>Activos virtuales</th><td class="lv-m rec">Medio</td></tr>
+    <tr><th>Ataques de ransomware</th><td class="lv-m rec">Medio</td></tr><tr><th>Pandemia de COVID-19</th><td class="lv-b rec">Bajo</td></tr></tbody></table></div>
+</section>
+
+<section id="sf">
+  <h2>Sectores del sistema financiero · 2020 contra 2023</h2>
+  <p class="sub">Las celdas con borde son las que <b>cambiaron</b> de 2020 a 2023: ahí se esconden los distractores. 17 a 31 % del grupo falló cuáles sectores quedaron en riesgo medio.</p>
+  <div class="tablewrap"><table class="t2"><thead><tr><th>Sector</th><th>2020</th><th>2023</th></tr></thead><tbody><tr><th>Banca Múltiple G-7</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><th>Banca Múltiple-Cambiarios</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><th>Casas de cambio</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Banca de Desarrollo</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Banca Múltiple-Crédito a los hogares</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>SOCAP</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>SOFIPO</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Banca Múltiple-Inversión</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Transmisores de dinero</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-m chg rec">Medio</td></tr><tr><th>Banca Múltiple-Comercial</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>SOFOM reguladas</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Casas de bolsa</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-m chg rec">Medio</td></tr><tr><th>ITF / Fintech</th><td class="na rec">— (no evaluado)</td><td class="lv-m chg rec">Medio</td></tr><tr><th>Centros cambiarios</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Uniones de crédito</th><td class="lv-m rec">Medio</td><td class="lv-mb chg rec">Medio-bajo</td></tr><tr><th>SOFINCO (SOFI)</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>Almacenes generales de depósito</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>SOFOM no reguladas</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>SODAFI</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>AFORES</th><td class="lv-b rec">Bajo</td><td class="lv-b rec">Bajo</td></tr><tr><th>Seguros</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-b chg rec">Bajo</td></tr><tr><th>Fianzas</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-b chg rec">Bajo</td></tr><tr><th>Asesores de inversión</th><td class="lv-b rec">Bajo</td><td class="lv-b rec">Bajo</td></tr></tbody></table></div>
+  <div class="regla"><b>Regla para el examen</b><span>Alto, sólo dos: <b>Banca Múltiple G-7 y Banca Múltiple-Cambiarios</b>. Subieron a medio: transmisores de dinero y casas de bolsa; entró ITF en medio. Bajaron: uniones de crédito a medio-bajo; seguros y fianzas a bajo.</span><span class="ref">Cap. IV, Matriz de riesgo sectorial</span></div>
+  <div id="s-sf" data-sorter="sf"></div>
+</section>
+
+<section id="av">
+  <h2>Actividades vulnerables · 2020 contra 2023</h2>
+  <p class="sub">El reactivo de AV en medio-bajo lo falló 24 a 41 % del grupo. El distractor fuerte: <b>servicios profesionales y mutuo</b> (medio-bajo y medio, no ambos medio-bajo).</p>
+  <div class="tablewrap"><table class="t2"><thead><tr><th>Actividad vulnerable</th><th>2020</th><th>2023</th></tr></thead><tbody><tr><th>Obras de arte</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><th>Metales y piedras preciosas, joyas y relojes</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><th>Monederos y certificados de devoluciones o recompensas</th><td class="lv-m rec">Medio</td><td class="lv-a chg rec">Alto</td></tr><tr><th>Tarjetas prepagadas, vales o cupones</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Vehículos aéreos, marítimos o terrestres</th><td class="lv-a rec">Alto</td><td class="lv-m chg rec">Medio</td></tr><tr><th>Servidores públicos</th><td class="na rec">— (no evaluado)</td><td class="lv-m chg rec">Medio</td></tr><tr><th>Fe pública</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Mutuo, préstamos o créditos</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><th>Servicios de blindaje</th><td class="lv-a rec">Alto</td><td class="lv-mb chg rec">Medio-bajo</td></tr><tr><th>Tarjetas de servicios o de crédito</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>Juegos con apuesta, concursos o sorteos</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>Transmisión de derechos sobre inmuebles</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>Recepción de donativos</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>Derechos personales de uso o goce de inmuebles</th><td class="lv-m rec">Medio</td><td class="lv-mb chg rec">Medio-bajo</td></tr><tr><th>Desarrollo inmobiliario</th><td class="na rec">— (no evaluado)</td><td class="lv-mb chg rec">Medio-bajo</td></tr><tr><th>Activos virtuales</th><td class="na rec">— (no evaluado)</td><td class="lv-mb chg rec">Medio-bajo</td></tr><tr><th>Servicios profesionales</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr><tr><th>Traslado o custodia de dinero o valores</th><td class="lv-mb rec">Medio-bajo</td><td class="lv-mb rec">Medio-bajo</td></tr></tbody></table></div>
+  <div class="regla"><b>Regla para el examen</b><span>Alto 2023: <b>obras de arte · metales y joyas · monederos y certificados</b> (monederos subió de medio). Blindaje bajó de alto a <b>medio-bajo</b>; vehículos, de alto a medio. Activos virtuales, desarrollo inmobiliario y servidores públicos se evaluaron por primera vez.</span><span class="ref">Cap. IV, Riesgo de LD de las AV</span></div>
+  <div id="s-av" data-sorter="av"></div>
+</section>
+
+<section id="factores">
+  <h2>Los 37 factores con su valoración</h2>
+  <p class="sub">El reactivo de «impacto o facilitación alto» lo falló 27 a 39 %. Ojo: la pregunta suele pedir dos factores juntos y basta que uno sea medio para que la opción sea falsa.</p>
+  <div class="tablewrap"><table class="t2"><thead><tr><th>#</th><th>Rubro</th><th>Tipo</th><th>Factor de riesgo</th><th>Impacto / Facilitación</th><th>Probabilidad de ocurrencia / explotación</th></tr></thead><tbody><tr class="fam-sep"><td class="num">1</td><td>Régimen</td><td>Vulnerabilidad</td><th>Debilidad en el Marco Jurídico de AV</th><td class="lv-a rec">Alto</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">2</td><td>Régimen</td><td>Vulnerabilidad</td><th>Debilidad en el Marco Jurídico del SF</th><td class="lv-b rec">Bajo</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">3</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiencias en los sistemas de monitoreo y alertamiento de la UIF</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">4</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiencias en el diseño del Aviso y Reporte conforme a estándares internacionales</th><td class="lv-m rec">Medio</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">5</td><td>Régimen</td><td>Vulnerabilidad</td><th>Insuficiente obligatoriedad de la normativa para implementar un EBR por los SO del SF</th><td class="lv-m rec">Medio</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">6</td><td>Régimen</td><td>Vulnerabilidad</td><th>Insuficiente obligatoriedad de la normativa para implementar un EBR por los SO de AV</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">7</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiente maduración de los modelos de riesgo de los supervisores del SF</th><td class="lv-m rec">Medio</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">8</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiente maduración de los modelos de riesgo de los supervisores de AV</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">9</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiente información sobre las Estructuras Jurídicas</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">10</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiente información sobre el Beneficiario Final</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">11</td><td>Régimen</td><td>Vulnerabilidad</td><th>Deficiente coordinación efectiva entre autoridades para el intercambio de información</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">12</td><td>Régimen</td><td>Vulnerabilidad</td><th>Debilidad del sistema supervisor y sancionador</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr class="fam-sep"><td class="num">13</td><td>LD</td><td>Amenaza</td><th>Aumento de la delincuencia organizada</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">14</td><td>LD</td><td>Amenaza</td><th>Incremento del volumen de recursos ilícitos generados en México</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">15</td><td>LD</td><td>Amenaza</td><th>Aumento de la corrupción</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">16</td><td>LD</td><td>Vulnerabilidad</td><th>Deficiente cultura constitucional</th><td class="lv-a rec">Alto</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">17</td><td>LD</td><td>Vulnerabilidad</td><th>Debilidad regulatoria del comercio electrónico</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">18</td><td>LD</td><td>Vulnerabilidad</td><th>Debilidad en los procesos de contratación pública de bienes y servicios</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">19</td><td>LD</td><td>Vulnerabilidad</td><th>Aumento de la economía informal</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">20</td><td>LD</td><td>Vulnerabilidad</td><th>Incremento en las operaciones en efectivo en moneda nacional</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">21</td><td>LD</td><td>Vulnerabilidad</td><th>Deficiencias en las infraestructuras de los mercados financieros</th><td class="lv-m rec">Medio</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">22</td><td>LD</td><td>Vulnerabilidad</td><th>Incremento en las operaciones en dólares de los EE.UU. y otras divisas</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">23</td><td>LD</td><td>Vulnerabilidad</td><th>Deficientes controles en los movimientos transfronterizos en puertos de entrada y salida</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">24</td><td>LD</td><td>Vulnerabilidad</td><th>Deficiente impartición de justicia</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">25</td><td>LD</td><td>Vulnerabilidad</td><th>Debilidad regulatoria de las Instituciones de Tecnología Financiera</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr class="fam-sep"><td class="num">26</td><td>FT</td><td>Amenaza</td><th>Existencia de grupos terroristas nacionales o internacionales en México</th><td class="lv-a rec">Alto</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">27</td><td>FT</td><td>Amenaza</td><th>Generación de recursos de origen nacional encaminados a grupos terroristas</th><td class="lv-m rec">Medio</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">28</td><td>FT</td><td>Amenaza</td><th>Existencia de grupos terroristas de nacionalidad mexicana en el extranjero</th><td class="lv-a rec">Alto</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">29</td><td>FT</td><td>Vulnerabilidad</td><th>Endebles controles ante la posición geográfica y porosidad de las fronteras</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">30</td><td>FT</td><td>Vulnerabilidad</td><th>Deficiente conocimiento y capacitación de los SO sobre temas de FT</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">31</td><td>FT</td><td>Vulnerabilidad</td><th>Incremento de la posibilidad de las OSFL de cometer actos de FT</th><td class="lv-m rec">Medio</td><td class="lv-b rec">Bajo</td></tr><tr class="fam-sep"><td class="num">32</td><td>FPADM</td><td>Amenaza</td><th>Desarrollo de ADM dentro del territorio nacional</th><td class="lv-a rec">Alto</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">33</td><td>FPADM</td><td>Amenaza</td><th>Incremento al financiamiento al desarrollo de ADM desde el territorio nacional</th><td class="lv-a rec">Alto</td><td class="lv-b rec">Bajo</td></tr><tr><td class="num">34</td><td>FPADM</td><td>Amenaza</td><th>Deficiente desarrollo e implementación de un sistema de respuesta ante un ataque con ADM</th><td class="lv-a rec">Alto</td><td class="lv-m rec">Medio</td></tr><tr class="fam-sep"><td class="num">35</td><td>Emergentes</td><td>Amenaza</td><th>Debilidad regulatoria de los Activos Virtuales</th><td class="lv-a rec">Alto</td><td class="lv-m rec">Medio</td></tr><tr><td class="num">36</td><td>Emergentes</td><td>Amenaza</td><th>Incremento de los ataques de Ransomware</th><td class="lv-a rec">Alto</td><td class="lv-a rec">Alto</td></tr><tr><td class="num">37</td><td>Emergentes</td><td>Amenaza</td><th>Endebles controles de los efectos derivados de la pandemia de COVID-19</th><td class="lv-m rec">Medio</td><td class="lv-m rec">Medio</td></tr></tbody></table></div>
+  <div class="regla"><b>Alto y alto (los dos ejes)</b><span>Amenazas: delincuencia organizada · recursos ilícitos generados en México · corrupción · ataques de ransomware. Vulnerabilidades: contratación pública · movimientos transfronterizos en puertos · impartición de justicia · porosidad de fronteras (FT).</span><span class="ref">Cap. XI, Mapas de riesgo</span></div>
+  <div id="s-fx" data-sorter="fx"></div>
+</section>
+
+<section id="trampas">
+  <h2>Trampas</h2>
+  <div class="traps">
+    <div class="card trap"><h3>Cruzar 2020 con 2023</h3><p class="mini">Blindaje era alto en 2020 y es <b>medio-bajo</b> en 2023. Monederos era medio y es <b>alto</b>.</p><span class="ref">Cap. IV</span></div>
+    <div class="card trap"><h3>«Medio-bajo» contra «medio-alto»</h3><p class="mini">Medio-bajo es de la matriz sectorial; medio-alto, de la evaluación integral (LD).</p><span class="ref">Caps. IV y XI</span></div>
+    <div class="card trap"><h3>Activos virtuales, ¿alto o medio-bajo?</h3><p class="mini">Como <b>sector de AV</b>: medio-bajo. Como <b>factor emergente</b> (debilidad regulatoria): impacto alto, probabilidad media; riesgo integral medio.</p><span class="ref">Caps. IV, X y XI</span></div>
+    <div class="card trap"><h3>«Probabilidad de ocurrencia» de una vulnerabilidad</h3><p class="mini">Las vulnerabilidades se miden con facilitación y <b>explotación</b>. Impacto y ocurrencia son de las amenazas.</p><span class="ref">Cap. V</span></div>
+    <div class="card trap"><h3>Terrorismo: impacto alto, ¿riesgo alto?</h3><p class="mini">Las amenazas de FT tienen impacto alto pero probabilidad <b>baja</b>; el riesgo integral de FT es bajo.</p><span class="ref">Caps. VIII y XI</span></div>
+    <div class="card trap"><h3>La «ENR» de la Guía Anticorrupción</h3><p class="mini">La Guía (2020) define ENR como la <b>primera</b> evaluación. No describe la ENR 2023.</p><span class="ref">Guía Anticorrupción, Definiciones VI</span></div>
+  </div>
+</section>
+
+<section id="practica">
+  <h2>Ronda 3.3.3 · voten antes de revelar</h2>
+  <p class="sub">Diez reactivos nuevos sobre las tablas y escalas de la ENR 2023.</p>
+  <div data-ronda="r333"></div>
+</section>
+
+<footer><span>Fuente: Evaluación Nacional de Riesgos de LD/FT 2023 (UIF), versión de la biblioteca del Aula. Citas por capítulo y número de factor.</span><span>Reglas de examen: criterio didáctico 360Educa. Material didáctico; no sustituye la publicación oficial.</span></footer>
+</div>
+<script>
+const SORTERS={"sf": {"prompt": "¿Nivel de riesgo de LD 2023?", "cats": [{"k": "a", "label": "Alto"}, {"k": "m", "label": "Medio"}, {"k": "mb", "label": "Medio-bajo"}, {"k": "b", "label": "Bajo"}], "items": [{"t": "Banca Múltiple-Cambiarios", "k": "a", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Banca de Desarrollo", "k": "m", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Banca Múltiple-Inversión", "k": "m", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Transmisores de dinero", "k": "m", "x": "En 2020 era medio-bajo.", "ref": "ENR 2023, Cap. IV"}, {"t": "Banca Múltiple-Comercial", "k": "m", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Casas de bolsa", "k": "m", "x": "En 2020 era medio-bajo.", "ref": "ENR 2023, Cap. IV"}, {"t": "ITF / Fintech", "k": "m", "x": "Se evaluó por primera vez.", "ref": "ENR 2023, Cap. IV"}, {"t": "Uniones de crédito", "k": "mb", "x": "En 2020 era medio.", "ref": "ENR 2023, Cap. IV"}, {"t": "SOFOM no reguladas", "k": "mb", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Seguros", "k": "b", "x": "En 2020 era medio-bajo.", "ref": "ENR 2023, Cap. IV"}]}, "av": {"prompt": "¿Nivel de riesgo de LD 2023?", "cats": [{"k": "a", "label": "Alto"}, {"k": "m", "label": "Medio"}, {"k": "mb", "label": "Medio-bajo"}], "items": [{"t": "Obras de arte", "k": "a", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Monederos y certificados de devoluciones o recompensas", "k": "a", "x": "En 2020 era medio.", "ref": "ENR 2023, Cap. IV"}, {"t": "Vehículos aéreos, marítimos o terrestres", "k": "m", "x": "En 2020 era alto.", "ref": "ENR 2023, Cap. IV"}, {"t": "Servidores públicos", "k": "m", "x": "Se evaluó por primera vez.", "ref": "ENR 2023, Cap. IV"}, {"t": "Fe pública", "k": "m", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Mutuo, préstamos o créditos", "k": "m", "x": "", "ref": "ENR 2023, Cap. IV"}, {"t": "Servicios de blindaje", "k": "mb", "x": "En 2020 era alto.", "ref": "ENR 2023, Cap. IV"}, {"t": "Desarrollo inmobiliario", "k": "mb", "x": "Se evaluó por primera vez.", "ref": "ENR 2023, Cap. IV"}, {"t": "Activos virtuales", "k": "mb", "x": "Se evaluó por primera vez.", "ref": "ENR 2023, Cap. IV"}, {"t": "Servicios profesionales", "k": "mb", "x": "", "ref": "ENR 2023, Cap. IV"}]}, "fx": {"prompt": "¿Grado de impacto o de facilitación?", "cats": [{"k": "a", "label": "Alto"}, {"k": "m", "label": "Medio"}, {"k": "b", "label": "Bajo"}], "items": [{"t": "Debilidad en el Marco Jurídico del SF <small>(vulnerabilidad)</small>", "k": "b", "x": "Probabilidad: bajo.", "ref": "ENR 2023, factor 2"}, {"t": "Deficiente información sobre el Beneficiario Final <small>(vulnerabilidad)</small>", "k": "m", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 10"}, {"t": "Aumento de la corrupción <small>(amenaza)</small>", "k": "a", "x": "Probabilidad: alto.", "ref": "ENR 2023, factor 15"}, {"t": "Deficiente cultura constitucional <small>(vulnerabilidad)</small>", "k": "a", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 16"}, {"t": "Debilidad regulatoria del comercio electrónico <small>(vulnerabilidad)</small>", "k": "m", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 17"}, {"t": "Debilidad en los procesos de contratación pública de bienes y servicios <small>(vulnerabilidad)</small>", "k": "a", "x": "Probabilidad: alto.", "ref": "ENR 2023, factor 18"}, {"t": "Incremento en las operaciones en efectivo en moneda nacional <small>(vulnerabilidad)</small>", "k": "m", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 20"}, {"t": "Incremento en las operaciones en dólares de los EE.UU. y otras divisas <small>(vulnerabilidad)</small>", "k": "m", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 22"}, {"t": "Endebles controles ante la posición geográfica y porosidad de las fronteras <small>(vulnerabilidad)</small>", "k": "a", "x": "Probabilidad: alto.", "ref": "ENR 2023, factor 29"}, {"t": "Incremento de la posibilidad de las OSFL de cometer actos de FT <small>(vulnerabilidad)</small>", "k": "m", "x": "Probabilidad: bajo.", "ref": "ENR 2023, factor 31"}, {"t": "Deficiente desarrollo e implementación de un sistema de respuesta ante un ataque con ADM <small>(amenaza)</small>", "k": "a", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 34"}, {"t": "Debilidad regulatoria de los Activos Virtuales <small>(amenaza)</small>", "k": "a", "x": "Probabilidad: medio.", "ref": "ENR 2023, factor 35"}]}};
+const RONDAS={"r333": {"title": "Ronda 3.3.3 · ENR 2023", "items": [{"pat": "Niveles por sector", "q": "Según la ENR 2023, ¿qué sectores del sistema financiero tienen riesgo de LD <b>alto</b>?", "o": ["Banca Múltiple G-7 y Banca Múltiple-Cambiarios", "Banca Múltiple G-7 y casas de cambio", "Banca de Desarrollo y SOFIPO", "Banca Múltiple-Comercial y Banca Múltiple-Inversión"], "a": 0, "x": "Sólo esos dos, igual que en 2020. Comercial e Inversión son medio.", "ref": "ENR 2023, Cap. IV"}, {"pat": "2020 contra 2023", "q": "¿Qué sector del sistema financiero pasó de riesgo medio-bajo en 2020 a medio en 2023?", "o": ["Uniones de crédito", "Transmisores de dinero", "Seguros", "AFORES"], "a": 1, "x": "También casas de bolsa. Uniones de crédito hizo lo contrario: de medio a medio-bajo.", "ref": "ENR 2023, Cap. IV"}, {"pat": "AV medio-bajo", "q": "¿Qué par de actividades vulnerables quedó en riesgo de LD medio-bajo en la ENR 2023?", "o": ["Servicios de blindaje y activos virtuales", "Fe pública y servidores públicos", "Obras de arte y joyería", "Mutuo y tarjetas prepagadas"], "a": 0, "x": "Fe pública, servidores públicos, mutuo y prepagadas son medio; obras de arte y joyería, alto.", "ref": "ENR 2023, Cap. IV"}, {"pat": "2020 contra 2023", "q": "La actividad de servicios de blindaje tenía riesgo alto en 2020. ¿Qué nivel tiene en 2023?", "o": ["Alto", "Medio", "Medio-bajo", "Bajo"], "a": 2, "x": "Es la caída más grande de las AV.", "ref": "ENR 2023, Cap. IV"}, {"pat": "Escalas", "q": "En la evaluación integral de la ENR 2023, ¿qué nivel tiene el riesgo de lavado de dinero?", "o": ["Alto", "Medio-alto", "Medio-bajo", "Medio"], "a": 1, "x": "Medio-bajo no existe en la escala integral (bajo, medio, medio-alto, alto).", "ref": "ENR 2023, Cap. XI"}, {"pat": "Dimensiones", "q": "¿Con qué binomio se valoran las <b>vulnerabilidades</b> en la ENR 2023?", "o": ["Grado de impacto y probabilidad de ocurrencia", "Grado de facilitación y probabilidad de explotación", "Probabilidad y severidad", "Exposición y mitigación"], "a": 1, "x": "Impacto y ocurrencia son de las amenazas.", "ref": "ENR 2023, Cap. V"}, {"pat": "Impacto/facilitación alto", "q": "¿Cuál de estos factores tiene grado de facilitación <b>alto</b>?", "o": ["Deficiente información sobre el Beneficiario Final", "Incremento en las operaciones en efectivo en moneda nacional", "Debilidad en los procesos de contratación pública de bienes y servicios", "Debilidad regulatoria del comercio electrónico"], "a": 2, "x": "Contratación pública: facilitación alta y explotación alta. Los otros tres son medio.", "ref": "ENR 2023, factores 10, 17, 18 y 20"}, {"pat": "Alto y alto", "q": "¿Cuál de estas amenazas de LD tiene grado de impacto y probabilidad de ocurrencia altos?", "o": ["Aumento de la corrupción", "Generación de recursos nacionales para grupos terroristas", "Desarrollo de ADM en territorio nacional", "Endebles controles de los efectos de la pandemia"], "a": 0, "x": "Las tres amenazas de LD (delincuencia organizada, recursos ilícitos y corrupción) son alto y alto.", "ref": "ENR 2023, factores 13 a 15"}, {"pat": "FT", "q": "Las amenazas de financiamiento al terrorismo en la ENR 2023 tienen, en general…", "o": ["Impacto y probabilidad altos", "Impacto alto o medio y probabilidad baja", "Impacto bajo y probabilidad alta", "Impacto y probabilidad medios"], "a": 1, "x": "Por eso el riesgo integral de FT es bajo, aunque la vulnerabilidad de porosidad de fronteras sea alto y alto.", "ref": "ENR 2023, factores 26 a 29"}, {"pat": "Datos generales", "q": "¿Cuántos factores de riesgo identificó la ENR 2023?", "o": ["26 en cinco rubros", "26 en seis rubros", "37 en cinco rubros", "37 en seis rubros"], "a": 2, "x": "26 en 5 rubros fue la ENR 2016; 26 en 6, la ENR 2020.", "ref": "ENR 2023, Cap. II"}]}};
+
+</script>
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+window.F4={$, $$, esc};
+/* proyección y recitar */
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const bp=$("#b-proj"), br=$("#b-rec");
+function setP(on){document.body.classList.toggle("proj",on);bp&&bp.setAttribute("aria-pressed",on);store("f4-proj",on?"1":"0")}
+function setR(on){document.body.classList.toggle("recitar",on);br&&br.setAttribute("aria-pressed",on);$$(".rec.shown").forEach(e=>e.classList.remove("shown"))}
+bp&&bp.addEventListener("click",()=>setP(!document.body.classList.contains("proj")));
+br&&br.addEventListener("click",()=>setR(!document.body.classList.contains("recitar")));
+const bpr=$("#b-print"); bpr&&bpr.addEventListener("click",()=>window.print());
+if(store("f4-proj")==="1")setP(true);
+document.addEventListener("click",e=>{const r=e.target.closest(".rec");if(r&&document.body.classList.contains("recitar"))r.classList.add("shown")});
+/* sorters: data-sorter = id en SORTERS */
+function initSorter(box){
+  const S=SORTERS[box.dataset.sorter]; let done=0, good=0;
+  const order=S.items.map((x,i)=>i); if(S.shuffle!==false){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}}
+  box.classList.add("sorter");
+  box.innerHTML=`<div class="top"><span class="eyebrow">${esc(S.prompt||"Clasifica")}</span><span class="score num" data-sc>0 de ${S.items.length}</span></div>`+
+   order.map(i=>{const it=S.items[i];return `<div class="it" data-i="${i}"><div>${it.t}</div><div class="opts">${S.cats.map(c=>`<button type="button" data-k="${c.k}">${esc(c.label)}</button>`).join("")}</div></div>`}).join("")+
+   `<div class="qbtns"><button class="btn ghost" type="button" data-reset>Reiniciar</button></div>`;
+  box.onclick=e=>{
+    if(e.target.closest("[data-reset]")){initSorter(box);return}
+    const b=e.target.closest("button[data-k]"); if(!b)return; const row=b.closest(".it"); if(row.classList.contains("done"))return;
+    const it=S.items[+row.dataset.i]; const right=[].concat(it.k); const ok=right.includes(b.dataset.k);
+    row.classList.add("done"); done++; if(ok)good++;
+    $$("button[data-k]",row).forEach(z=>{z.disabled=true; if(right.includes(z.dataset.k))z.classList.add("right"); else if(z===b)z.classList.add("wrong")});
+    row.insertAdjacentHTML("beforeend",`<div class="fb"><b class="${ok?"tick":"cross"}">${ok?"✓":"✗"}</b> ${it.x||""}${it.ref?` <span class="ref">${esc(it.ref)}</span>`:""}</div>`);
+    $("[data-sc]",box).textContent=`${good} de ${done} · ${S.items.length} en total`;
+  };
+}
+$$("[data-sorter]").forEach(initSorter);
+/* rondas: votación antes de revelar */
+$$("[data-ronda]").forEach(box=>{
+  const R=RONDAS[box.dataset.ronda]; let i=0, rev=new Array(R.items.length).fill(false), pick=new Array(R.items.length).fill(-1);
+  box.classList.add("ronda","card");
+  function draw(){
+    const q=R.items[i];
+    box.innerHTML=`<div class="head"><span class="eyebrow num">${esc(R.title)} · ${i+1} de ${R.items.length}</span><span class="dots">${R.items.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</span></div>
+     ${q.pat?`<span class="pat">Ataca: ${esc(q.pat)}</span>`:""}
+     <p class="qtext">${q.q}</p>
+     <div class="opts">${q.o.map((o,k)=>`<button type="button" class="op${pick[i]===k?" sel":""}${rev[i]&&k===q.a?" right":""}${rev[i]&&pick[i]===k&&k!==q.a?" wrong":""}" data-k="${k}"><b>${"ABCD"[k]}</b><span>${o}</span></button>`).join("")}</div>
+     <div data-fb>${rev[i]?`<div class="qfb"><b class="ok">Respuesta: ${"ABCD"[q.a]}.</b> ${q.x} <span class="ref">${esc(q.ref)}</span></div>`:`<p class="mini sub">Voten primero (mano alzada o chat: A, B, C o D). Luego revela.</p>`}</div>
+     <div class="qbtns"><button class="btn ghost" type="button" data-prev ${i===0?"disabled":""}>Anterior</button>${rev[i]?"":`<button class="btn" type="button" data-rev>Revelar</button>`}<button class="btn ghost" type="button" data-next ${i===R.items.length-1?"disabled":""}>Siguiente</button></div>`;
+  }
+  box.addEventListener("click",e=>{
+    const op=e.target.closest(".op"); if(op&&!rev[i]){pick[i]=+op.dataset.k;draw();return}
+    if(e.target.closest("[data-rev]")){rev[i]=true;draw();return}
+    if(e.target.closest("[data-next]")&&i<R.items.length-1){i++;draw();return}
+    if(e.target.closest("[data-prev]")&&i>0){i--;draw();return}
+  });
+  draw();
+});
+})();
+</script>
+<script></script>
+</body>
+</html>
