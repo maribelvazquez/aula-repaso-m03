@@ -1,0 +1,345 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Simulacro de cierre · jueves</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#faf5ec; --surface:#ffffff; --surface-2:#f3ede1; --line:#e4dccd;
+  --fg:#1b1b1e; --muted:#5b5f62; --carbon:#393e41;
+  --verde:#64c27b; --verde-claro:#87d895; --verde-tint:#e3f4e6;
+  --morado:#a663cc; --morado-tint:#f1e6f8;
+  --turquesa:#80bcb5; --amarillo:#faa916; --coral:#ff8361; --coral-tint:#ffe9e2;
+  --no:#b9b2a5; --on-color:#1b1b1e; --on-dark:#ffffff;
+  --f-display:"Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:18px;padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(21px,3vw,27px);font-weight:800}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.hl{background:var(--verde);color:var(--on-color);padding:0 .18em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{max-width:68ch;color:var(--carbon);font-size:16px}
+.membrete{height:3px;background:var(--verde-claro);border:0;margin:14px 0 0}
+header.top{display:grid;gap:12px;padding-block:8px 18px}
+nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding-block:8px;margin-bottom:8px;scrollbar-width:thin}
+nav.idx a{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--fg);text-decoration:none;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+nav.idx a:hover{border-color:var(--morado)}
+section{padding-block:30px 6px;display:grid;gap:14px;scroll-margin-top:60px}
+.sub{color:var(--muted);max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.num{font-variant-numeric:tabular-nums}
+.ref{font-size:12px;color:var(--muted);font-weight:600}
+.mini{font-size:13px}
+/* Puertas */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.door{appearance:none;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;cursor:pointer;position:relative}
+.door:hover{border-color:var(--carbon)}
+.door[aria-pressed="true"]{outline:3px solid var(--morado);outline-offset:-1px}
+.door .n{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1}
+.door .t{font-family:var(--f-display);font-weight:700;font-size:15px}
+.door .d{font-size:13px;color:var(--muted)}
+.door .tag{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--surface-2)}
+.door.debe .tag{background:var(--amarillo);color:var(--on-color)}
+.ritmo{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-family:var(--f-display);font-weight:800;font-size:22px}
+.ritmo span.lbl{font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--muted)}
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.extra .card{display:grid;gap:6px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;justify-self:start}
+.pill.star{background:var(--amarillo);color:var(--on-color)}
+.pill.warn{background:var(--coral);color:var(--on-color)}
+/* Matriz */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+thead th{font-family:var(--f-display);font-size:12.5px;font-weight:700;background:var(--surface-2);position:sticky;top:0}
+thead th button{all:unset;cursor:pointer;display:grid;gap:2px}
+thead th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+thead th small{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:11px}
+th.col-x{background:var(--coral-tint)}
+tbody th{font-weight:600;font-size:14px;white-space:nowrap;border-left:6px solid var(--fam,var(--line))}
+tbody th button{all:unset;cursor:pointer}
+tbody th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+td.cell{text-align:center;padding:5px}
+.c{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:74px;min-height:30px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.c:focus-visible{outline:2px solid var(--morado);outline-offset:2px}
+.c.si{background:var(--verde);color:var(--on-color)}
+.c.debe{background:var(--amarillo);color:var(--on-color)}
+.c.medio{border:2px dashed var(--carbon);color:var(--fg)}
+.c.no{color:var(--no);font-weight:600}
+tr.fam-sep th, tr.fam-sep td{border-top:2px solid var(--line)}
+table.dim tbody td.cell:not(.on) .c{opacity:.28}
+table.dim thead th.on{background:var(--morado);color:var(--on-dark)}
+table.dim thead th.on small{color:var(--on-dark)}
+tbody tr.rowon th{background:var(--morado-tint)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+.legend .c{min-width:auto;cursor:default}
+.detail{border-left:6px solid var(--morado)}
+.detail h3{margin-bottom:4px}
+.detail ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+/* Asistente */
+.wiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.wiz{grid-template-columns:1fr}}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
+legend{font-family:var(--f-display);font-weight:700;font-size:14px;margin-bottom:6px}
+legend b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--carbon);color:var(--bg);font-size:12px;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{cursor:pointer;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+.chips label i{width:9px;height:9px;border-radius:50%;background:var(--fam,var(--line))}
+.chips input:checked + label{background:var(--morado);border-color:var(--morado);color:var(--on-dark)}
+.chips input:focus-visible + label{outline:2px solid var(--morado);outline-offset:2px}
+.verdict{display:grid;gap:10px;align-content:start}
+.vbadge{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:22px;padding:4px 14px;border-radius:8px}
+.vbadge.si{background:var(--verde);color:var(--on-color)}
+.vbadge.debe{background:var(--amarillo);color:var(--on-color)}
+.vbadge.no{background:var(--carbon);color:var(--bg)}
+.vbadge.medio{border:2px dashed var(--carbon)}
+.req{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.req li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:14px}
+.req li::before{content:"✓";font-weight:800;color:var(--verde)}
+.note{font-size:13.5px;background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.note.warn{background:var(--coral-tint)}
+/* Requisitos */
+table.req-t{min-width:980px;font-size:13px}
+table.req-t td{vertical-align:top}
+table.req-t tbody th{border-left:0;white-space:normal;min-width:150px;font-size:13px}
+.yes{font-weight:700}
+.y::before{content:"Sí · ";font-weight:800;color:var(--verde)}
+.n0{color:var(--muted)}
+.colfilter{display:flex;flex-wrap:wrap;gap:6px}
+.colfilter button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.colfilter button[aria-pressed="true"]{background:var(--carbon);color:var(--bg);border-color:var(--carbon)}
+/* Transferencias */
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;counter-reset:t}
+.tl .card{display:grid;gap:6px;border-top:5px solid var(--amarillo)}
+.tl .k{font-family:var(--f-display);font-weight:800;font-size:18px}
+/* Trampas */
+.traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.trap{display:grid;gap:6px;border:2px dashed var(--carbon);background:var(--surface)}
+.trap h3{font-size:15px}
+/* Práctica */
+.quiz{display:grid;gap:12px}
+.qbox{display:grid;gap:12px}
+.qtext{font-size:17px;font-weight:600;max-width:70ch}
+.qbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:9px 18px;border-radius:8px;border:0;cursor:pointer;background:var(--morado);color:var(--on-dark)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.qfb{font-size:14.5px;border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.qfb b.ok{color:var(--verde)} .qfb b.bad{color:var(--coral)}
+.score{font-family:var(--f-display);font-weight:800}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted);display:grid;gap:6px;max-width:80ch}
+@media (prefers-reduced-motion:no-preference){ .c,.door,.chips label{transition:background .15s, opacity .15s, border-color .15s} }
+
+
+/* ---- Frente 4: piezas nuevas ---- */
+.topbar{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:9px 16px;background:#1b1b1e;color:#fff;font:600 13px/1.3 Inter,Arial,sans-serif}
+.topbar a{color:#fff}
+.topbar .sp{flex:1}
+.topbar button{font:inherit;font-size:12px;color:#fff;background:transparent;border:1px solid #6b6f72;border-radius:999px;padding:4px 10px;cursor:pointer}
+.topbar button[aria-pressed="true"]{background:var(--verde);color:#1b1b1e;border-color:var(--verde)}
+body.proj{font-size:18px}
+body.proj .wrap{max-width:1280px}
+body.proj .qtext{font-size:24px}
+body.proj .sorter .it{font-size:17px}
+body.proj table{font-size:16px}
+.rec{transition:filter .15s}
+body.recitar .rec:not(.shown){filter:blur(6px);cursor:pointer;user-select:none}
+.hint-rec{display:none}
+body.recitar .hint-rec{display:block}
+/* ganchos */
+.hooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.hook{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--verde);border-radius:var(--r);padding:12px 14px;display:grid;gap:4px;align-content:start}
+.hook .n{font-family:var(--f-display);font-weight:800;font-size:38px;line-height:1}
+.hook .t{font-family:var(--f-display);font-weight:700;font-size:14px}
+.hook .d{font-size:12.5px;color:var(--muted)}
+.hook.warn{border-top-color:var(--coral)}
+.col .hooks{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+.col .hook .n{font-size:30px}
+.hook.star{border-top-color:var(--amarillo)}
+/* tablas de contenido */
+table.t2{min-width:720px;font-size:14px}
+table.t2 td,table.t2 th{vertical-align:top}
+table.t2 tbody th{border-left:0;white-space:normal;min-width:170px;font-size:14px}
+td.dif{background:var(--coral-tint)}
+td.ok{background:var(--verde-tint)}
+td.na{color:var(--no)}
+.tick{font-weight:800;color:var(--verde)}
+.cross{font-weight:800;color:var(--coral)}
+.k{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:var(--surface-2);margin-right:4px}
+.k.g{background:var(--verde);color:var(--on-color)} .k.m{background:var(--morado);color:var(--on-dark)} .k.a{background:var(--amarillo);color:var(--on-color)} .k.c{background:var(--coral);color:var(--on-color)} .k.t{background:var(--turquesa);color:var(--on-color)}
+.lit{font-style:italic}
+.lit::before{content:"«"} .lit::after{content:"»"}
+.regla{display:grid;gap:4px;border-left:6px solid var(--verde);background:var(--surface);border-radius:8px;padding:10px 14px}
+.regla b{font-family:var(--f-display)}
+.crit{font-size:12px;color:var(--muted);font-style:italic}
+/* sorter */
+.sorter{display:grid;gap:8px}
+.sorter .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.sorter .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px}
+@media (max-width:700px){.sorter .it{grid-template-columns:1fr}}
+.sorter .opts{display:flex;flex-wrap:wrap;gap:6px}
+.sorter .opts button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer}
+.sorter .opts button:disabled{cursor:default;opacity:.55}
+.sorter .opts button.right{background:var(--verde);color:var(--on-color);opacity:1;border-color:var(--verde)}
+.sorter .opts button.wrong{background:var(--coral);color:var(--on-color);opacity:1;border-color:var(--coral)}
+.sorter .fb{grid-column:1/-1;font-size:13.5px;color:var(--carbon)}
+.sorter .fb .ref{margin-left:6px}
+.sorter .it.done{border-color:var(--carbon)}
+/* ronda */
+.ronda{display:grid;gap:12px}
+.ronda .head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ronda .opts{display:grid;gap:8px}
+.ronda .op{all:unset;cursor:pointer;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.ronda .op b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface-2);font-family:var(--f-display)}
+.ronda .op.sel{outline:3px solid var(--morado);outline-offset:-2px}
+.ronda .op.right{background:var(--verde-tint);border-color:var(--verde)}
+.ronda .op.right b{background:var(--verde);color:var(--on-color)}
+.ronda .op.wrong{background:var(--coral-tint);border-color:var(--coral)}
+.ronda .op:focus-visible{outline:2px solid var(--morado)}
+.ronda .pat{font-size:12px;font-weight:700;color:var(--muted)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--carbon)}
+/* línea de tiempo */
+.tline{display:grid;gap:0;counter-reset:st}
+.tline .st{display:grid;grid-template-columns:44px 1fr;gap:12px;position:relative;padding-bottom:14px}
+.tline .st::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--verde);color:var(--on-color);font-family:var(--f-display);font-weight:800;z-index:1}
+.tline .st::after{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--line)}
+.tline .st:last-child::after{display:none}
+.tline .st .card{display:grid;gap:4px;padding:10px 14px}
+.tline .st.alert::before{background:var(--coral)}
+/* asistente */
+.steps{display:grid;gap:12px}
+.qstep{display:grid;gap:8px}
+.qstep[hidden]{display:none}
+.yn{display:flex;gap:8px;flex-wrap:wrap}
+.yn button{font:inherit;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--morado);color:var(--on-dark);border-color:var(--morado)}
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px dashed var(--carbon);background:var(--surface);color:var(--fg);cursor:pointer;text-align:left}
+.cases button[aria-pressed="true"]{background:var(--carbon);color:var(--bg)}
+.vbadge.c1{background:var(--verde);color:var(--on-color)}
+.vbadge.c2{background:var(--verde-claro);color:var(--on-color)}
+.vbadge.c3{background:var(--amarillo);color:var(--on-color)}
+.vbadge.c4{background:var(--coral);color:var(--on-color)}
+.vbadge.c5{background:var(--surface-2);border:2px dashed var(--carbon)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.col h3{margin-bottom:6px}
+.col ol,.col ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.col.gafi{border-top:5px solid var(--morado)} .col.bas{border-top:5px solid var(--turquesa)} .col.dcg{border-top:5px solid var(--amarillo)}
+@media (max-width:700px){table.t2{min-width:600px;font-size:13px} table.t2 tbody th{min-width:110px} .hook .n{font-size:30px}}
+@media print{.topbar,nav.idx,.btn,.yn,.cases,.sorter .opts{display:none!important} body{background:#fff} .card{break-inside:avoid}}
+
+</style>
+</head>
+<body>
+<nav class="topbar" aria-label="Repaso"><b style="font-family:Montserrat,Arial,sans-serif;letter-spacing:.04em">Módulo 3 · Repaso</b><a href="../index.html">← Todos los temas</a><span class="sp"></span><button type="button" id="b-proj" aria-pressed="false">Modo proyección</button><button type="button" id="b-rec" aria-pressed="false">Modo recitar</button><button type="button" id="b-print">Imprimir</button></nav>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">360Educa · Módulo 3 · Repaso de resultados · 3.1.1 · 3.1.2 · 3.2.1 · 3.2.2</div>
+  <h1>Repaso del jueves · <span class="hl">Simulacro de cierre</span></h1>
+  <p class="lede">Quince reactivos para cerrar la sesión: los mismos temas que el grupo falló, con redacción nueva.</p>
+  <p class="mini sub hint-rec">Modo recitar: las celdas difuminadas se descubren con un toque. Dilas en voz alta antes de tocar.</p>
+  <hr class="membrete">
+</header>
+<nav class="idx" aria-label="Secciones"><a href="#simulacro">Simulacro</a></nav>
+
+<section id="simulacro">
+  <h2>Simulacro de cierre · 15 reactivos</h2>
+  <p class="sub">Reescritos a partir de los reactivos que más falló el grupo en los simuladores. Un minuto por reactivo: voten, revelen y sigan. Al final, cada quien cuenta sus aciertos.</p>
+  <div data-ronda="simj"></div>
+</section>
+
+<footer><span>Fuentes: Lineamientos del Informe de Auditoría (DOF 18-oct-2021), DCG Bancos 60ª, Reglamento de Supervisión de la CNBV, Guía EBR del GAFI para el sector bancario y BCBS 275.</span><span>Material didáctico 360Educa; no sustituye la publicación oficial.</span></footer>
+</div>
+<script>
+const SORTERS={};
+const RONDAS={"simj": {"title": "Simulacro jueves", "items": [{"pat": "3.1.1 · Persona Moral", "q": "¿Qué requisitos debe cubrir la Persona Moral contratada para elaborar el Informe de Auditoría?<br>a. Ser y mantenerse independiente del Sujeto Supervisado<br>b. No haber sido sentenciada por delitos patrimoniales<br>c. No tener litigio pendiente con el Sujeto<br>d. Contar con recursos técnicos, humanos, financieros y administrativos suficientes<br>e. No ejercer el Control en el Sujeto", "o": ["a, b, c", "a, d, e", "b, c, d", "c, d, e"], "a": 1, "x": "Las tres del QUINTO. b y c son requisitos del Auditor (CUARTO fr. III y VII).", "ref": "QUINTO fr. I a III"}, {"pat": "3.1.1 · Auditor persona física", "q": "¿Cuáles son requisitos del Auditor persona física?<br>a. Licenciatura y al menos 3 años de experiencia en PLD/FT<br>b. Recursos financieros suficientes<br>c. No formar parte de la estructura accionaria del Sujeto<br>d. No encontrarse en las listas oficiales<br>e. No ejercer el Control", "o": ["a, b, e", "a, c, d", "b, d, e", "c, d, e"], "a": 1, "x": "b y e son de la Persona Moral.", "ref": "CUARTO fr. I, VI y IX"}, {"pat": "3.1.1 · Parcial vs No cumple", "q": "El Auditor encuentra que uno de los cuatro reportes trimestrales de Operaciones Relevantes del año se presentó fuera de plazo. ¿Cómo califica la obligación?", "o": ["Cumple Mayoritariamente", "Cumple Parcialmente", "No cumple", "No aplica"], "a": 2, "x": "Hay evidencia de un incumplimiento que actualiza sanción. Parcial es sin evidencia objetiva.", "ref": "OCTAVO A fr. IV inc. a) · OCTAVO B num. 4"}, {"pat": "3.1.1 · Plazo de remisión", "q": "¿En qué plazo debe remitirse el Informe de Auditoría a la CNBV?", "o": ["60 días hábiles siguientes al cierre del ejercicio", "60 días naturales siguientes al cierre del ejercicio", "3 días hábiles siguientes a que concluya la revisión", "20 días hábiles siguientes a que lo conozca el Comité"], "a": 1, "x": "Naturales. Alumnos reportan que el examen real ofreció «hábiles» como opción.", "ref": "Bancos 60ª · SOFOM 52ª"}, {"pat": "3.1.1 · Asuntos clave", "q": "¿Cuál de estos hechos debe describirse en la sección C, Asuntos clave de la auditoría?", "o": ["Omitió expedir constancias a 2 de 5 empleados capacitados", "El Sujeto no cuenta con sistema automatizado", "Un expediente de la muestra carece de un dato", "El Auditor recomienda actualizar el índice del Manual"], "a": 1, "x": "Sin sistema automatizado, los controles no tienen eficacia para mitigar los Riesgos: información preocupante.", "ref": "OCTAVO C"}, {"pat": "3.1.1 · Objeto", "q": "¿Cuáles son objeto de los Lineamientos?<br>1. Requisitos mínimos para contratar Personas Morales y Auditores<br>2. Procedimientos y requisitos para la elaboración del Informe<br>3. Procedimientos que deben prevenir y detectar los Sujetos Obligados<br>4. Procedimientos y requisitos para la remisión del Informe a la Comisión", "o": ["1, 2, 3", "1, 2, 4", "1, 3, 4", "2, 3, 4"], "a": 1, "x": "Contratación · elaboración · remisión.", "ref": "PRIMERO"}, {"pat": "3.1.2 · Art. 5 vs 8", "q": "¿Qué establece el artículo 8 del Reglamento de Supervisión?", "o": ["Los tipos de visita que puede realizar la Comisión", "Los supuestos en que la Comisión puede llevar a cabo visitas especiales", "La definición de visita de investigación", "El contenido del programa anual"], "a": 1, "x": "Los tipos están en el art. 5; la investigación, en el 9.", "ref": "Arts. 5, 8 y 9"}, {"pat": "3.1.2 · Supuestos de especial", "q": "¿Cuáles son supuestos de visita especial?<br>1. Indicios de una conducta que presuntamente contravenga las leyes<br>2. Cambios en la situación contable, legal, económica, financiera o administrativa<br>3. Una persona sin autorización se ostenta como Entidad Supervisada<br>4. La Entidad inicia operaciones después del programa anual", "o": ["1 y 2", "2 y 4", "1 y 3", "3 y 4"], "a": 1, "x": "1 es art. 9 y 3 es art. 10: investigación.", "ref": "Art. 8 fr. III y IV"}, {"pat": "3.1.2 · Facultades", "q": "La Comisión formula a una entidad observaciones por detectar elementos que implican un probable incumplimiento. ¿Qué facultad de supervisión ejerce?", "o": ["Inspección", "Vigilancia", "Prevención y corrección", "Investigación"], "a": 2, "x": "Las observaciones surgen al ejercer inspección y vigilancia, pero son instrumento de prevención y corrección (Título Cuarto).", "ref": "Arts. 1 y 49"}, {"pat": "3.2.1 · Retos", "q": "Según la Guía EBR del GAFI, ¿cuáles son retos de poner en práctica el EBR?<br>1. Costo económico de implementar un EBR<br>2. Asignación de responsabilidades<br>3. Mitigación del riesgo de LA/FT<br>4. Desarrollo de grupos de trabajo<br>5. Inclusión financiera", "o": ["1, 2, 3", "1, 3, 5", "2, 3, 5", "2, 4, 5"], "a": 2, "x": "Costo económico y grupos de trabajo no son retos.", "ref": "GAFI párr. 17 a 29"}, {"pat": "3.2.1 · Ajustes", "q": "«Los supervisores deben determinar el alcance o nivel de evaluación apropiados en función de los riesgos identificados.» ¿Qué ajuste describe?", "o": ["Intensidad de los controles para su función de autorización", "Intensidad de la supervisión", "Frecuencia y naturaleza de la supervisión continua", "Tipo de supervisión"], "a": 1, "x": "Alcance o nivel de evaluación = intensidad de la supervisión.", "ref": "GAFI párr. 39 inc. d)"}, {"pat": "3.2.2 · Factores del cliente", "q": "En su política de aceptación de clientes, ¿qué factores considera Basilea para evaluar el riesgo?", "o": ["Antecedentes, profesión, actividad o giro del negocio, origen y destino de sus recursos", "Antecedentes, ocupación, volumen de transacciones, país de origen y residencia", "Antecedentes, ocupación, fuentes de renta y riqueza, país de origen y de residencia, productos utilizados", "Antecedentes, nacionalidad, actividad o giro, origen y destino de recursos"], "a": 2, "x": "«Origen y destino» es redacción DCG; «volumen de transacciones» no está en el párr. 32.", "ref": "Basilea párr. 32"}, {"pat": "3.2.2 · Objetivo", "q": "¿Cuál es el principal objetivo de la supervisión bancaria, al que contribuye la gestión del riesgo BC/FT según Basilea?", "o": ["Proteger la seguridad y solvencia de los bancos y del sistema bancario", "Conocer el riesgo inherente y residual para aplicar mitigantes", "Contribuir a una supervisión que establezca medidas ALA/CFT", "Proteger la reputación de la empresa"], "a": 0, "x": "La reputación es una de las razones que enumera el párr. 5, no el objetivo principal.", "ref": "Basilea párr. 2 y 5"}, {"pat": "3.2.2 · Elementos esenciales", "q": "¿Cuáles son elementos esenciales de Basilea?<br>1. Notificación de transacciones sospechosas y bloqueo de activos<br>2. Identificación, verificación y elaboración del perfil de riesgo de clientes y beneficiarios efectivos<br>3. Identificar, comprender y mitigar los riesgos<br>4. Gestión de la información<br>5. Control interno y gobierno corporativo<br>6. Política de aceptación de clientes", "o": ["1, 2, 4, 6", "1, 3, 4, 5", "2, 3, 5, 6", "2, 4, 5, 6"], "a": 0, "x": "3 está mal nombrado (el elemento es «evaluación, comprensión, gestión y mitigación de riesgos») y 5 no es elemento.", "ref": "Basilea Sección II"}, {"pat": "3.2.2 · Líneas de defensa", "q": "Relaciona:<br>1. Auditoría interna · 2. Responsable ejecutivo de PBC/FT · 3. Unidades de negocio<br>a) Evaluar de forma independiente la gestión y los controles · b) Identificar, evaluar y controlar los riesgos de sus actividades · c) Seguimiento continuo del cumplimiento de las obligaciones PBC/FT", "o": ["1a, 2b, 3c", "1a, 2c, 3b", "1c, 2a, 3b", "1b, 2c, 3a"], "a": 1, "x": "3ª línea · 2ª línea · 1ª línea.", "ref": "Basilea párr. 19, 22 y 26"}]}};
+
+</script>
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+window.F4={$, $$, esc};
+/* proyección y recitar */
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const bp=$("#b-proj"), br=$("#b-rec");
+function setP(on){document.body.classList.toggle("proj",on);bp&&bp.setAttribute("aria-pressed",on);store("f4-proj",on?"1":"0")}
+function setR(on){document.body.classList.toggle("recitar",on);br&&br.setAttribute("aria-pressed",on);$$(".rec.shown").forEach(e=>e.classList.remove("shown"))}
+bp&&bp.addEventListener("click",()=>setP(!document.body.classList.contains("proj")));
+br&&br.addEventListener("click",()=>setR(!document.body.classList.contains("recitar")));
+const bpr=$("#b-print"); bpr&&bpr.addEventListener("click",()=>window.print());
+if(store("f4-proj")==="1")setP(true);
+document.addEventListener("click",e=>{const r=e.target.closest(".rec");if(r&&document.body.classList.contains("recitar"))r.classList.add("shown")});
+/* sorters: data-sorter = id en SORTERS */
+function initSorter(box){
+  const S=SORTERS[box.dataset.sorter]; let done=0, good=0;
+  const order=S.items.map((x,i)=>i); if(S.shuffle!==false){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}}
+  box.classList.add("sorter");
+  box.innerHTML=`<div class="top"><span class="eyebrow">${esc(S.prompt||"Clasifica")}</span><span class="score num" data-sc>0 de ${S.items.length}</span></div>`+
+   order.map(i=>{const it=S.items[i];return `<div class="it" data-i="${i}"><div>${it.t}</div><div class="opts">${S.cats.map(c=>`<button type="button" data-k="${c.k}">${esc(c.label)}</button>`).join("")}</div></div>`}).join("")+
+   `<div class="qbtns"><button class="btn ghost" type="button" data-reset>Reiniciar</button></div>`;
+  box.onclick=e=>{
+    if(e.target.closest("[data-reset]")){initSorter(box);return}
+    const b=e.target.closest("button[data-k]"); if(!b)return; const row=b.closest(".it"); if(row.classList.contains("done"))return;
+    const it=S.items[+row.dataset.i]; const right=[].concat(it.k); const ok=right.includes(b.dataset.k);
+    row.classList.add("done"); done++; if(ok)good++;
+    $$("button[data-k]",row).forEach(z=>{z.disabled=true; if(right.includes(z.dataset.k))z.classList.add("right"); else if(z===b)z.classList.add("wrong")});
+    row.insertAdjacentHTML("beforeend",`<div class="fb"><b class="${ok?"tick":"cross"}">${ok?"✓":"✗"}</b> ${it.x||""}${it.ref?` <span class="ref">${esc(it.ref)}</span>`:""}</div>`);
+    $("[data-sc]",box).textContent=`${good} de ${done} · ${S.items.length} en total`;
+  };
+}
+$$("[data-sorter]").forEach(initSorter);
+/* rondas: votación antes de revelar */
+$$("[data-ronda]").forEach(box=>{
+  const R=RONDAS[box.dataset.ronda]; let i=0, rev=new Array(R.items.length).fill(false), pick=new Array(R.items.length).fill(-1);
+  box.classList.add("ronda","card");
+  function draw(){
+    const q=R.items[i];
+    box.innerHTML=`<div class="head"><span class="eyebrow num">${esc(R.title)} · ${i+1} de ${R.items.length}</span><span class="dots">${R.items.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</span></div>
+     ${q.pat?`<span class="pat">Ataca: ${esc(q.pat)}</span>`:""}
+     <p class="qtext">${q.q}</p>
+     <div class="opts">${q.o.map((o,k)=>`<button type="button" class="op${pick[i]===k?" sel":""}${rev[i]&&k===q.a?" right":""}${rev[i]&&pick[i]===k&&k!==q.a?" wrong":""}" data-k="${k}"><b>${"ABCD"[k]}</b><span>${o}</span></button>`).join("")}</div>
+     <div data-fb>${rev[i]?`<div class="qfb"><b class="ok">Respuesta: ${"ABCD"[q.a]}.</b> ${q.x} <span class="ref">${esc(q.ref)}</span></div>`:`<p class="mini sub">Voten primero (mano alzada o chat: A, B, C o D). Luego revela.</p>`}</div>
+     <div class="qbtns"><button class="btn ghost" type="button" data-prev ${i===0?"disabled":""}>Anterior</button>${rev[i]?"":`<button class="btn" type="button" data-rev>Revelar</button>`}<button class="btn ghost" type="button" data-next ${i===R.items.length-1?"disabled":""}>Siguiente</button></div>`;
+  }
+  box.addEventListener("click",e=>{
+    const op=e.target.closest(".op"); if(op&&!rev[i]){pick[i]=+op.dataset.k;draw();return}
+    if(e.target.closest("[data-rev]")){rev[i]=true;draw();return}
+    if(e.target.closest("[data-next]")&&i<R.items.length-1){i++;draw();return}
+    if(e.target.closest("[data-prev]")&&i>0){i--;draw();return}
+  });
+  draw();
+});
+})();
+</script>
+<script></script>
+</body>
+</html>

@@ -1,0 +1,453 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Explorador de la visita · 3.1.2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#faf5ec; --surface:#ffffff; --surface-2:#f3ede1; --line:#e4dccd;
+  --fg:#1b1b1e; --muted:#5b5f62; --carbon:#393e41;
+  --verde:#64c27b; --verde-claro:#87d895; --verde-tint:#e3f4e6;
+  --morado:#a663cc; --morado-tint:#f1e6f8;
+  --turquesa:#80bcb5; --amarillo:#faa916; --coral:#ff8361; --coral-tint:#ffe9e2;
+  --no:#b9b2a5; --on-color:#1b1b1e; --on-dark:#ffffff;
+  --f-display:"Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:18px;padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(21px,3vw,27px);font-weight:800}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.hl{background:var(--verde);color:var(--on-color);padding:0 .18em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{max-width:68ch;color:var(--carbon);font-size:16px}
+.membrete{height:3px;background:var(--verde-claro);border:0;margin:14px 0 0}
+header.top{display:grid;gap:12px;padding-block:8px 18px}
+nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding-block:8px;margin-bottom:8px;scrollbar-width:thin}
+nav.idx a{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--fg);text-decoration:none;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+nav.idx a:hover{border-color:var(--morado)}
+section{padding-block:30px 6px;display:grid;gap:14px;scroll-margin-top:60px}
+.sub{color:var(--muted);max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.num{font-variant-numeric:tabular-nums}
+.ref{font-size:12px;color:var(--muted);font-weight:600}
+.mini{font-size:13px}
+/* Puertas */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.door{appearance:none;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;cursor:pointer;position:relative}
+.door:hover{border-color:var(--carbon)}
+.door[aria-pressed="true"]{outline:3px solid var(--morado);outline-offset:-1px}
+.door .n{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1}
+.door .t{font-family:var(--f-display);font-weight:700;font-size:15px}
+.door .d{font-size:13px;color:var(--muted)}
+.door .tag{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--surface-2)}
+.door.debe .tag{background:var(--amarillo);color:var(--on-color)}
+.ritmo{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-family:var(--f-display);font-weight:800;font-size:22px}
+.ritmo span.lbl{font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--muted)}
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.extra .card{display:grid;gap:6px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;justify-self:start}
+.pill.star{background:var(--amarillo);color:var(--on-color)}
+.pill.warn{background:var(--coral);color:var(--on-color)}
+/* Matriz */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+thead th{font-family:var(--f-display);font-size:12.5px;font-weight:700;background:var(--surface-2);position:sticky;top:0}
+thead th button{all:unset;cursor:pointer;display:grid;gap:2px}
+thead th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+thead th small{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:11px}
+th.col-x{background:var(--coral-tint)}
+tbody th{font-weight:600;font-size:14px;white-space:nowrap;border-left:6px solid var(--fam,var(--line))}
+tbody th button{all:unset;cursor:pointer}
+tbody th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+td.cell{text-align:center;padding:5px}
+.c{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:74px;min-height:30px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.c:focus-visible{outline:2px solid var(--morado);outline-offset:2px}
+.c.si{background:var(--verde);color:var(--on-color)}
+.c.debe{background:var(--amarillo);color:var(--on-color)}
+.c.medio{border:2px dashed var(--carbon);color:var(--fg)}
+.c.no{color:var(--no);font-weight:600}
+tr.fam-sep th, tr.fam-sep td{border-top:2px solid var(--line)}
+table.dim tbody td.cell:not(.on) .c{opacity:.28}
+table.dim thead th.on{background:var(--morado);color:var(--on-dark)}
+table.dim thead th.on small{color:var(--on-dark)}
+tbody tr.rowon th{background:var(--morado-tint)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+.legend .c{min-width:auto;cursor:default}
+.detail{border-left:6px solid var(--morado)}
+.detail h3{margin-bottom:4px}
+.detail ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+/* Asistente */
+.wiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.wiz{grid-template-columns:1fr}}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
+legend{font-family:var(--f-display);font-weight:700;font-size:14px;margin-bottom:6px}
+legend b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--carbon);color:var(--bg);font-size:12px;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{cursor:pointer;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+.chips label i{width:9px;height:9px;border-radius:50%;background:var(--fam,var(--line))}
+.chips input:checked + label{background:var(--morado);border-color:var(--morado);color:var(--on-dark)}
+.chips input:focus-visible + label{outline:2px solid var(--morado);outline-offset:2px}
+.verdict{display:grid;gap:10px;align-content:start}
+.vbadge{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:22px;padding:4px 14px;border-radius:8px}
+.vbadge.si{background:var(--verde);color:var(--on-color)}
+.vbadge.debe{background:var(--amarillo);color:var(--on-color)}
+.vbadge.no{background:var(--carbon);color:var(--bg)}
+.vbadge.medio{border:2px dashed var(--carbon)}
+.req{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.req li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:14px}
+.req li::before{content:"✓";font-weight:800;color:var(--verde)}
+.note{font-size:13.5px;background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.note.warn{background:var(--coral-tint)}
+/* Requisitos */
+table.req-t{min-width:980px;font-size:13px}
+table.req-t td{vertical-align:top}
+table.req-t tbody th{border-left:0;white-space:normal;min-width:150px;font-size:13px}
+.yes{font-weight:700}
+.y::before{content:"Sí · ";font-weight:800;color:var(--verde)}
+.n0{color:var(--muted)}
+.colfilter{display:flex;flex-wrap:wrap;gap:6px}
+.colfilter button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.colfilter button[aria-pressed="true"]{background:var(--carbon);color:var(--bg);border-color:var(--carbon)}
+/* Transferencias */
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;counter-reset:t}
+.tl .card{display:grid;gap:6px;border-top:5px solid var(--amarillo)}
+.tl .k{font-family:var(--f-display);font-weight:800;font-size:18px}
+/* Trampas */
+.traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.trap{display:grid;gap:6px;border:2px dashed var(--carbon);background:var(--surface)}
+.trap h3{font-size:15px}
+/* Práctica */
+.quiz{display:grid;gap:12px}
+.qbox{display:grid;gap:12px}
+.qtext{font-size:17px;font-weight:600;max-width:70ch}
+.qbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:9px 18px;border-radius:8px;border:0;cursor:pointer;background:var(--morado);color:var(--on-dark)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.qfb{font-size:14.5px;border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.qfb b.ok{color:var(--verde)} .qfb b.bad{color:var(--coral)}
+.score{font-family:var(--f-display);font-weight:800}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted);display:grid;gap:6px;max-width:80ch}
+@media (prefers-reduced-motion:no-preference){ .c,.door,.chips label{transition:background .15s, opacity .15s, border-color .15s} }
+
+
+/* ---- Frente 4: piezas nuevas ---- */
+.topbar{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:9px 16px;background:#1b1b1e;color:#fff;font:600 13px/1.3 Inter,Arial,sans-serif}
+.topbar a{color:#fff}
+.topbar .sp{flex:1}
+.topbar button{font:inherit;font-size:12px;color:#fff;background:transparent;border:1px solid #6b6f72;border-radius:999px;padding:4px 10px;cursor:pointer}
+.topbar button[aria-pressed="true"]{background:var(--verde);color:#1b1b1e;border-color:var(--verde)}
+body.proj{font-size:18px}
+body.proj .wrap{max-width:1280px}
+body.proj .qtext{font-size:24px}
+body.proj .sorter .it{font-size:17px}
+body.proj table{font-size:16px}
+.rec{transition:filter .15s}
+body.recitar .rec:not(.shown){filter:blur(6px);cursor:pointer;user-select:none}
+.hint-rec{display:none}
+body.recitar .hint-rec{display:block}
+/* ganchos */
+.hooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.hook{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--verde);border-radius:var(--r);padding:12px 14px;display:grid;gap:4px;align-content:start}
+.hook .n{font-family:var(--f-display);font-weight:800;font-size:38px;line-height:1}
+.hook .t{font-family:var(--f-display);font-weight:700;font-size:14px}
+.hook .d{font-size:12.5px;color:var(--muted)}
+.hook.warn{border-top-color:var(--coral)}
+.col .hooks{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+.col .hook .n{font-size:30px}
+.hook.star{border-top-color:var(--amarillo)}
+/* tablas de contenido */
+table.t2{min-width:720px;font-size:14px}
+table.t2 td,table.t2 th{vertical-align:top}
+table.t2 tbody th{border-left:0;white-space:normal;min-width:170px;font-size:14px}
+td.dif{background:var(--coral-tint)}
+td.ok{background:var(--verde-tint)}
+td.na{color:var(--no)}
+.tick{font-weight:800;color:var(--verde)}
+.cross{font-weight:800;color:var(--coral)}
+.k{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:var(--surface-2);margin-right:4px}
+.k.g{background:var(--verde);color:var(--on-color)} .k.m{background:var(--morado);color:var(--on-dark)} .k.a{background:var(--amarillo);color:var(--on-color)} .k.c{background:var(--coral);color:var(--on-color)} .k.t{background:var(--turquesa);color:var(--on-color)}
+.lit{font-style:italic}
+.lit::before{content:"«"} .lit::after{content:"»"}
+.regla{display:grid;gap:4px;border-left:6px solid var(--verde);background:var(--surface);border-radius:8px;padding:10px 14px}
+.regla b{font-family:var(--f-display)}
+.crit{font-size:12px;color:var(--muted);font-style:italic}
+/* sorter */
+.sorter{display:grid;gap:8px}
+.sorter .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.sorter .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px}
+@media (max-width:700px){.sorter .it{grid-template-columns:1fr}}
+.sorter .opts{display:flex;flex-wrap:wrap;gap:6px}
+.sorter .opts button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer}
+.sorter .opts button:disabled{cursor:default;opacity:.55}
+.sorter .opts button.right{background:var(--verde);color:var(--on-color);opacity:1;border-color:var(--verde)}
+.sorter .opts button.wrong{background:var(--coral);color:var(--on-color);opacity:1;border-color:var(--coral)}
+.sorter .fb{grid-column:1/-1;font-size:13.5px;color:var(--carbon)}
+.sorter .fb .ref{margin-left:6px}
+.sorter .it.done{border-color:var(--carbon)}
+/* ronda */
+.ronda{display:grid;gap:12px}
+.ronda .head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ronda .opts{display:grid;gap:8px}
+.ronda .op{all:unset;cursor:pointer;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.ronda .op b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface-2);font-family:var(--f-display)}
+.ronda .op.sel{outline:3px solid var(--morado);outline-offset:-2px}
+.ronda .op.right{background:var(--verde-tint);border-color:var(--verde)}
+.ronda .op.right b{background:var(--verde);color:var(--on-color)}
+.ronda .op.wrong{background:var(--coral-tint);border-color:var(--coral)}
+.ronda .op:focus-visible{outline:2px solid var(--morado)}
+.ronda .pat{font-size:12px;font-weight:700;color:var(--muted)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--carbon)}
+/* línea de tiempo */
+.tline{display:grid;gap:0;counter-reset:st}
+.tline .st{display:grid;grid-template-columns:44px 1fr;gap:12px;position:relative;padding-bottom:14px}
+.tline .st::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--verde);color:var(--on-color);font-family:var(--f-display);font-weight:800;z-index:1}
+.tline .st::after{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--line)}
+.tline .st:last-child::after{display:none}
+.tline .st .card{display:grid;gap:4px;padding:10px 14px}
+.tline .st.alert::before{background:var(--coral)}
+/* asistente */
+.steps{display:grid;gap:12px}
+.qstep{display:grid;gap:8px}
+.qstep[hidden]{display:none}
+.yn{display:flex;gap:8px;flex-wrap:wrap}
+.yn button{font:inherit;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--morado);color:var(--on-dark);border-color:var(--morado)}
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px dashed var(--carbon);background:var(--surface);color:var(--fg);cursor:pointer;text-align:left}
+.cases button[aria-pressed="true"]{background:var(--carbon);color:var(--bg)}
+.vbadge.c1{background:var(--verde);color:var(--on-color)}
+.vbadge.c2{background:var(--verde-claro);color:var(--on-color)}
+.vbadge.c3{background:var(--amarillo);color:var(--on-color)}
+.vbadge.c4{background:var(--coral);color:var(--on-color)}
+.vbadge.c5{background:var(--surface-2);border:2px dashed var(--carbon)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.col h3{margin-bottom:6px}
+.col ol,.col ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.col.gafi{border-top:5px solid var(--morado)} .col.bas{border-top:5px solid var(--turquesa)} .col.dcg{border-top:5px solid var(--amarillo)}
+@media (max-width:700px){table.t2{min-width:600px;font-size:13px} table.t2 tbody th{min-width:110px} .hook .n{font-size:30px}}
+@media print{.topbar,nav.idx,.btn,.yn,.cases,.sorter .opts{display:none!important} body{background:#fff} .card{break-inside:avoid}}
+
+</style>
+</head>
+<body>
+<nav class="topbar" aria-label="Repaso"><b style="font-family:Montserrat,Arial,sans-serif;letter-spacing:.04em">Módulo 3 · Repaso</b><a href="../index.html">← Todos los temas</a><span class="sp"></span><button type="button" id="b-proj" aria-pressed="false">Modo proyección</button><button type="button" id="b-rec" aria-pressed="false">Modo recitar</button><button type="button" id="b-print">Imprimir</button></nav>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">360Educa · Módulo 3 · Repaso de resultados · Certificación CNBV PLD/FT · Temario agosto 2026</div>
+  <h1>3.1.2 · <span class="hl">Explorador de la visita</span></h1>
+  <p class="lede">Qué visita es, qué artículo lo dice, cuándo se notifica, qué acta se levanta y qué facultad ejerce la CNBV. Construido sobre los errores del grupo: art. 5 contra art. 8, especial contra investigación y observaciones como prevención y corrección.</p>
+  <p class="mini sub hint-rec">Modo recitar: las celdas difuminadas se descubren con un toque. Dilas en voz alta antes de tocar.</p>
+  <hr class="membrete">
+</header>
+<nav class="idx" aria-label="Secciones"><a href="#numeros">En números</a><a href="#escalera">Escalera de artículos</a><a href="#tipos">Tipos de visita</a><a href="#actas">Acta por acta</a><a href="#facultades">Las 3 facultades</a><a href="#trampas">Trampas</a><a href="#practica">Ronda 3.1.2</a></nav>
+
+<section id="numeros">
+  <h2>La visita en números</h2>
+  <p class="sub">Activa <b>Modo recitar</b> y dilos antes de descubrirlos.</p>
+  <div class="hooks">
+    <div class="hook"><span class="n rec">3</span><span class="t">Facultades de supervisión</span><span class="d">Inspección · vigilancia · prevención y corrección.</span><span class="ref">Art. 1</span></div>
+    <div class="hook star"><span class="n rec">3</span><span class="t">Tipos de visita</span><span class="d">Ordinarias · especiales · de investigación.</span><span class="ref">Art. 5</span></div>
+    <div class="hook star"><span class="n rec">6</span><span class="t">Supuestos de visita especial</span><span class="d">Fuera del programa anual.</span><span class="ref">Art. 8</span></div>
+    <div class="hook warn"><span class="n rec">2</span><span class="t">Días hábiles de anticipación</span><span class="d">Para notificar ordinarias y especiales. Investigación: en el acto.</span><span class="ref">Art. 21</span></div>
+    <div class="hook"><span class="n rec">6 + 6</span><span class="t">Meses de duración</span><span class="d">Máximo 6, prorrogable una única vez por un periodo igual.</span><span class="ref">Art. 20 fr. V</span></div>
+    <div class="hook"><span class="n rec">2 · 2</span><span class="t">Testigos · ejemplares</span><span class="d">Cada acta: dos testigos y dos ejemplares autógrafos.</span><span class="ref">Arts. 24, 26, 36, 39</span></div>
+    <div class="hook warn"><span class="n rec">20</span><span class="t">Días hábiles para manifestar</span><span class="d">Contra un oficio de observaciones.</span><span class="ref">Art. 50 fr. VII</span></div>
+    <div class="hook warn"><span class="n rec">3</span><span class="t">Días hábiles en 4 casos</span><span class="d">Registro contable · capitalización · calificación de cartera · protección del público.</span><span class="ref">Art. 50 fr. VII</span></div>
+    <div class="hook"><span class="n rec">10</span><span class="t">Días hábiles de prórroga</span><span class="d">Máximo; no procede en los 4 casos de 3 días.</span><span class="ref">Art. 50</span></div>
+  </div>
+</section>
+
+<section id="escalera">
+  <h2>La escalera de artículos</h2>
+  <p class="sub">El reactivo más fallado del tema: 56 % eligió «el artículo 8 establece los tipos de visita». Los tipos están en el <b>5</b>; el 8 son los <b>supuestos de la especial</b>. Recorre la escalera en orden y recítala.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th>Artículo</th><th>Qué dice</th><th>Frase para reconocerlo</th></tr></thead>
+   <tbody>
+    <tr><th>1</th><td class="rec">Objeto. La supervisión comprende <b>inspección, vigilancia y prevención y corrección</b>; consolidada en grupos y basada en riesgos.</td><td class="rec lit">la función de supervisión… comprende el ejercicio de las facultades de inspección, de vigilancia y de prevención y corrección</td></tr>
+    <tr><th>4</th><td class="rec">Qué es la <b>inspección</b>: visitas, verificación de operaciones y auditoría de registros y sistemas, en instalaciones o equipos de las entidades.</td><td class="rec lit">comprobar el estado en que se encuentran… liquidez, solvencia y estabilidad</td></tr>
+    <tr class="fam-sep"><th>5</th><td class="rec"><b>Tipos de visita</b>: ordinarias, especiales o de investigación.</td><td class="rec lit">podrán ser ordinarias, especiales o de investigación</td></tr>
+    <tr><th>6</th><td class="rec"><b>Ordinarias</b>: las del programa anual.</td><td class="rec lit">de conformidad con el programa anual</td></tr>
+    <tr><th>7</th><td class="rec">Contenido del <b>programa anual</b>: objetivos, forma y términos; frecuencia según experiencia, vigilancia y presupuesto.</td><td class="rec lit">la frecuencia que la experiencia y las necesidades ameriten</td></tr>
+    <tr><th>8</th><td class="rec"><b>Especiales</b>: no incluidas en el programa, en 6 supuestos.</td><td class="rec lit">no incluidas en el programa anual… en cualquiera de los supuestos siguientes</td></tr>
+    <tr><th>9</th><td class="rec"><b>Investigación</b>: indicios de una conducta que presuntamente contravenga las leyes. Puede pedir comparecencia.</td><td class="rec lit">indicios de los cuales pueda desprenderse la realización de alguna conducta que presuntamente contravenga</td></tr>
+    <tr><th>10</th><td class="rec"><b>Investigación</b> también: personas sin autorización; recabar información para otras autoridades; aseguramientos. Puede pedir fuerza pública.</td><td class="rec lit">sin contar con la autorización correspondiente</td></tr>
+    <tr class="fam-sep"><th>11 a 14</th><td class="rec"><b>Informe general</b> (toda visita) e <b>informes parciales</b>.</td><td class="rec lit">De toda visita de inspección… un informe general</td></tr>
+    <tr><th>15</th><td class="rec">Los inspectores <b>no</b> pueden ordenar ajustes ni girar observaciones o medidas durante la visita.</td><td class="rec lit">no estarán facultados para ordenar ajustes</td></tr>
+    <tr><th>19 y 20</th><td class="rec"><b>Orden de visita</b>: oficio fundado y motivado con 10 requisitos; duración máxima de 6 meses (+6).</td><td class="rec lit">no podrán tener una duración superior a seis meses</td></tr>
+    <tr><th>21</th><td class="rec"><b>Notificación</b>: 2 días hábiles antes (ordinarias y especiales); investigación, en el acto. Centros cambiarios, transmisores y SOFOM ENR (95 Bis): en el acto en los tres tipos.</td><td class="rec lit">al menos con dos días hábiles de anticipación</td></tr>
+    <tr class="fam-sep"><th>23 a 26</th><td class="rec">Acta de inicio · acta de constancia de visita · testigos.</td><td class="rec">—</td></tr>
+    <tr><th>34 a 38</th><td class="rec">Actas parciales; la entidad puede desvirtuar hasta antes del acta de conclusión.</td><td class="rec">—</td></tr>
+    <tr><th>39 a 41</th><td class="rec">Acta de conclusión; después ya no hay actas; visita de un día en una sola acta.</td><td class="rec">—</td></tr>
+    <tr class="fam-sep"><th>43 a 48</th><td class="rec"><b>Vigilancia</b>: análisis de la información; requerimientos por oficio; información defectuosa = no presentada.</td><td class="rec lit">se considerará como no cumplida la obligación de su presentación</td></tr>
+    <tr><th>49 a 51</th><td class="rec"><b>Observaciones</b> y recomendaciones; oficio; 20 días hábiles (3 en 4 casos).</td><td class="rec lit">sin perjuicio del inicio del procedimiento para la imposición de las sanciones</td></tr>
+    <tr><th>52 a 54</th><td class="rec"><b>Acciones, medidas correctivas</b> y programas de cumplimiento forzoso.</td><td class="rec lit">programas de cumplimiento forzoso</td></tr>
+   </tbody></table></div>
+  <div class="regla"><b>Regla para el examen</b><span>Recita en orden: <b>5 los nombra · 6 la ordinaria · 7 su programa · 8 la especial · 9 y 10 la de investigación</b>. Es el mismo orden en que el art. 5 los enumera.</span><span class="crit">Secuencia de estudio: criterio didáctico 360Educa.</span></div>
+</section>
+
+<section id="tipos">
+  <h2>Los tres tipos lado a lado</h2>
+  <p class="sub">Lee por renglón. Las celdas en coral son las diferencias que el examen usa como distractor.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th></th><th>Ordinaria</th><th>Especial</th><th>De investigación</th></tr></thead>
+   <tbody>
+    <tr><th>Artículo</th><td class="rec">6 y 7</td><td class="rec">8</td><td class="rec">9 y 10</td></tr>
+    <tr><th>¿En el programa anual?</th><td class="ok rec">Sí</td><td class="dif rec">No</td><td class="rec">No (se detona por indicios)</td></tr>
+    <tr><th>Cuándo</th><td class="rec">Con la frecuencia que la experiencia y las necesidades ameriten, según los resultados de la vigilancia y el presupuesto.</td><td class="rec">6 supuestos: situaciones especiales operativas · seguimiento a una visita · cambios en la situación de la entidad · inicio de operaciones después del programa · hechos no contemplados · cooperación internacional.</td><td class="rec">Indicios de una conducta que presuntamente contravenga las leyes · persona sin autorización que opera o se ostenta como entidad · recabar información para autoridades · aseguramiento o desbloqueo de cuentas.</td></tr>
+    <tr><th>Notificación de la orden</th><td class="rec">2 días hábiles antes</td><td class="rec">2 días hábiles antes</td><td class="dif rec">Puede ser en el acto de inicio</td></tr>
+    <tr><th>Excepción 95 Bis</th><td class="dif rec" colspan="3">Centros cambiarios, transmisores de dinero y SOFOM ENR: la orden de las tres puede notificarse en el acto de inicio (art. 21 segundo párrafo).</td></tr>
+    <tr><th>Comparecencia de probables infractores</th><td class="na">—</td><td class="na">—</td><td class="dif rec">Sí (art. 9)</td></tr>
+    <tr><th>Auxilio de la fuerza pública</th><td class="na">—</td><td class="na">—</td><td class="dif rec">Sí, si se impide u obstaculiza (art. 10)</td></tr>
+    <tr><th>Duración</th><td class="rec" colspan="3">Máximo 6 meses, prorrogable una única vez por un periodo igual, con causa justificada (art. 20 fr. V).</td></tr>
+    <tr><th>Informe general</th><td class="rec" colspan="3">De toda visita; las visitas del art. 10 segundo párrafo (recabar información para autoridades, aseguramientos) no aplican el art. 11 ni el 31.</td></tr>
+   </tbody></table></div>
+  <div id="s-tipo" data-sorter="tipo"></div>
+</section>
+
+<section id="actas">
+  <h2>La visita, acta por acta</h2>
+  <p class="sub">Del oficio al informe general. En el examen real preguntaron por las etapas y por las actas.</p>
+  <div class="tline">
+    <div class="st"><div class="card"><h3>Orden de visita</h3><p class="mini">Oficio fundado y motivado, firmado por el servidor público facultado: tipo y objeto, fecha de inicio y duración, lugares, información inicial, inspectores, etc.</p><span class="ref">Arts. 19 y 20</span></div></div>
+    <div class="st alert"><div class="card"><h3>Notificación</h3><p class="mini">2 días hábiles antes (ordinaria y especial). Investigación: puede ser en el acto. 95 Bis: en el acto en las tres.</p><span class="ref">Art. 21</span></div></div>
+    <div class="st"><div class="card"><h3>Identificación y acta de inicio</h3><p class="mini">Credencial vigente con fotografía. Acta de inicio en el lugar de la visita, firmada por representante legal, inspector coordinador y <b>dos testigos</b>, en <b>dos ejemplares</b>. Si no está el representante: citatorio para una hora fija del <b>día hábil siguiente</b>.</p><span class="ref">Arts. 22 a 24</span></div></div>
+    <div class="st"><div class="card"><h3>Acta de constancia de visita</h3><p class="mini">Sólo si la orden señala <b>dos o más lugares</b>: una en cada lugar visitado. Si la visita no pudo iniciar por causas ajenas a la CNBV: acta circunstanciada.</p><span class="ref">Art. 25</span></div></div>
+    <div class="st"><div class="card"><h3>Desarrollo</h3><p class="mini">Acceso inmediato e irrestricto, entrevistas, informe por escrito de hechos relevantes, relación genérica de lo exhibido, copias.</p><span class="ref">Arts. 29 a 33</span></div></div>
+    <div class="st alert"><div class="card"><h3>Actas parciales</h3><p class="mini">Pueden levantarse siempre; son <b>obligatorias</b> en 5 casos: incumplimientos graves · obstaculización · no rendir el informe escrito del art. 29 · complementar o modificar un acta previa · no exhibir información requerida. La entidad puede desvirtuar <b>hasta antes del acta de conclusión</b>.</p><span class="ref">Arts. 34 a 38</span></div></div>
+    <div class="st"><div class="card"><h3>Acta de conclusión</h3><p class="mini">En el lugar donde inició la visita; incluye a las demás actas, que forman parte de ella. Después <b>no puede levantarse acta alguna</b>: otra visita requiere nueva orden.</p><span class="ref">Arts. 39 y 40</span></div></div>
+    <div class="st"><div class="card"><h3>Informe general</h3><p class="mini">Lo suscribe el inspector; comprende los informes parciales; sin intervención del personal de la entidad.</p><span class="ref">Arts. 11 a 13</span></div></div>
+  </div>
+  <div class="note">En todas las actas: si el representante legal no firma o no recibe su ejemplar, se asienta en el acta <b>sin afectar su validez</b>. Si no designa testigos, los designan los inspectores.</div>
+</section>
+
+<section id="facultades">
+  <h2>Las tres facultades</h2>
+  <p class="sub">42 % del grupo ubicó las observaciones en inspección o vigilancia. Las observaciones <b>nacen</b> de la inspección y la vigilancia, pero son el instrumento de <b>prevención y corrección</b> (Título Cuarto).</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th></th><th>Inspección</th><th>Vigilancia</th><th>Prevención y corrección</th></tr></thead>
+   <tbody>
+    <tr><th>Dónde</th><td class="rec">Título Segundo · arts. 4 a 42</td><td class="rec">Título Tercero · arts. 43 a 48</td><td class="rec">Título Cuarto · arts. 49 a 54</td></tr>
+    <tr><th>Cómo</th><td class="rec">Visitas, verificación de operaciones y auditoría de registros y sistemas, en las instalaciones o equipos de la entidad.</td><td class="rec">Análisis de la información contable, legal, económica, financiera, administrativa, de procesos y procedimientos.</td><td class="rec">Observaciones y recomendaciones; acciones, medidas correctivas y programas de cumplimiento forzoso.</td></tr>
+    <tr><th>Instrumento</th><td class="rec">Orden de visita y actas.</td><td class="rec">Entrega periódica y oficio de requerimiento de información.</td><td class="rec">Oficio de observaciones · oficio de medidas correctivas.</td></tr>
+    <tr><th>Plazo clave</th><td class="rec">2 días hábiles para notificar · 6 meses de duración.</td><td class="rec">El que señalen las disposiciones o el oficio.</td><td class="dif rec">20 días hábiles para manifestar · 3 en 4 casos · prórroga ≤ 10.</td></tr>
+    <tr><th>Frase trampa</th><td class="rec lit">verificación de operaciones y auditoría de registros y sistemas</td><td class="rec lit">se considerará como no cumplida la obligación de su presentación</td><td class="rec lit">detecte elementos de los que puedan derivarse hechos, actos u omisiones que impliquen el probable incumplimiento</td></tr>
+   </tbody></table></div>
+  <div id="s-fac" data-sorter="fac"></div>
+</section>
+
+<section id="trampas">
+  <h2>Trampas</h2>
+  <div class="traps">
+    <div class="card trap"><h3>«El art. 8 establece los tipos de visita»</h3><p class="mini">Los tipos están en el art. 5. El 8 enumera los supuestos de la especial.</p><span class="ref">Arts. 5 y 8</span></div>
+    <div class="card trap"><h3>«Indicios de una conducta ilegal: visita especial»</h3><p class="mini">Indicios de conducta que presuntamente contraviene las leyes = <b>investigación</b>.</p><span class="ref">Art. 9</span></div>
+    <div class="card trap"><h3>«Toda orden se notifica 2 días antes»</h3><p class="mini">Investigación: puede ser en el acto. Y en 95 Bis (CC, TD, SOFOM ENR), las tres en el acto.</p><span class="ref">Art. 21</span></div>
+    <div class="card trap"><h3>«Las observaciones son vigilancia»</h3><p class="mini">Surgen del ejercicio de inspección y vigilancia, pero son prevención y corrección (Título Cuarto).</p><span class="ref">Arts. 1 y 49</span></div>
+    <div class="card trap"><h3>«20 días naturales»</h3><p class="mini">Hábiles. Y 3 hábiles en contabilidad, capitalización, cartera o protección del público.</p><span class="ref">Art. 50 fr. VII</span></div>
+    <div class="card trap"><h3>«El inspector ordena la medida en la visita»</h3><p class="mini">No puede ordenar ajustes ni girar observaciones o medidas durante la visita.</p><span class="ref">Art. 15</span></div>
+    <div class="card trap"><h3>«Después de la conclusión, un acta complementaria»</h3><p class="mini">Concluida la visita no hay más actas; se necesita una nueva orden.</p><span class="ref">Art. 40</span></div>
+    <div class="card trap"><h3>«Si no firma, el acta no vale»</h3><p class="mini">Se asienta la negativa y el acta conserva su validez y valor probatorio.</p><span class="ref">Arts. 24, 36 y 39</span></div>
+  </div>
+</section>
+
+<section id="practica">
+  <h2>Ronda 3.1.2 · voten antes de revelar</h2>
+  <p class="sub">Diez reactivos nuevos sobre los patrones del grupo: artículos, tipos de visita, notificación, actas y plazos.</p>
+  <div data-ronda="r312"></div>
+</section>
+
+<footer><span>Fuente: Reglamento de Supervisión de la Comisión Nacional Bancaria y de Valores (texto de la biblioteca del Aula). Citas por artículo, fracción y párrafo.</span><span>Reglas de examen y secuencias de estudio: criterio didáctico 360Educa. Material didáctico; no sustituye la publicación oficial.</span></footer>
+</div>
+<script>
+const SORTERS={"tipo": {"prompt": "¿Qué visita es?", "cats": [{"k": "o", "label": "Ordinaria"}, {"k": "e", "label": "Especial"}, {"k": "i", "label": "Investigación"}], "items": [{"t": "Está prevista en el programa anual de la Comisión", "k": "o", "ref": "Art. 6"}, {"t": "Para examinar y, en su caso, corregir situaciones especiales operativas, cuando lo prevean las leyes", "k": "e", "ref": "Art. 8 fr. I"}, {"t": "Para dar seguimiento a los resultados de una visita de inspección", "k": "e", "ref": "Art. 8 fr. II"}, {"t": "Hay cambios en la situación contable, legal, económica, financiera o administrativa de la entidad", "k": "e", "ref": "Art. 8 fr. III"}, {"t": "La entidad inició operaciones después de elaborado el programa anual", "k": "e", "ref": "Art. 8 fr. IV"}, {"t": "Hechos no contemplados en el programa anual que, a juicio de la CNBV, la motivan", "k": "e", "ref": "Art. 8 fr. V"}, {"t": "Deriva de la cooperación internacional", "k": "e", "ref": "Art. 8 fr. VI"}, {"t": "Hay indicios de una conducta que presuntamente contraviene las leyes que rigen a la entidad", "k": "i", "x": "El distractor favorito: suena a «especial», pero son indicios.", "ref": "Art. 9"}, {"t": "Una persona sin autorización opera como Entidad Supervisada o se ostenta con tal carácter", "k": "i", "ref": "Art. 10 fr. I"}, {"t": "Recabar directamente la información que le requieren autoridades competentes", "k": "i", "ref": "Art. 10 segundo párrafo"}, {"t": "Agilizar órdenes de aseguramiento o desbloqueo de cuentas", "k": "i", "ref": "Art. 10 segundo párrafo"}]}, "fac": {"prompt": "¿Qué facultad es?", "cats": [{"k": "i", "label": "Inspección"}, {"k": "v", "label": "Vigilancia"}, {"k": "p", "label": "Prevención y corrección"}], "items": [{"t": "Visitas, verificación de operaciones y auditoría de registros y sistemas", "k": "i", "ref": "Art. 4"}, {"t": "Análisis de la información contable, legal, económica y financiera que obtiene la Comisión", "k": "v", "ref": "Art. 43"}, {"t": "Oficio que solicita información para cumplir la función", "k": "v", "ref": "Arts. 46 y 47"}, {"t": "La información presentada sin los requisitos se considera no cumplida", "k": "v", "ref": "Art. 48"}, {"t": "Observaciones por detectar elementos de un probable incumplimiento", "k": "p", "x": "Se detectan al ejercer inspección y vigilancia; el instrumento es de prevención y corrección.", "ref": "Arts. 49 y 50"}, {"t": "Recomendaciones para mejorar sistemas de control o procesos", "k": "p", "ref": "Art. 49 segundo párrafo"}, {"t": "Programas de cumplimiento forzoso", "k": "p", "ref": "Art. 52"}, {"t": "Actas parciales por hechos que pueden implicar incumplimientos graves", "k": "i", "ref": "Art. 34 fr. I"}]}};
+const RONDAS={"r312": {"title": "Ronda 3.1.2", "items": [{"pat": "Art. 5 vs art. 8", "q": "«Las visitas de inspección que la Comisión lleve a cabo podrán ser ordinarias, especiales o de investigación.» ¿Qué artículo del Reglamento de Supervisión lo establece?", "o": ["Artículo 4", "Artículo 5", "Artículo 8", "Artículo 9"], "a": 1, "x": "El art. 5 enumera los tipos. El 8 da los supuestos de la especial; el 9, la de investigación.", "ref": "Art. 5"}, {"pat": "Supuestos del art. 8", "q": "¿Cuál de los siguientes <b>no</b> es un supuesto de visita especial?", "o": ["Dar seguimiento a los resultados de una visita de inspección", "Que la entidad inicie operaciones después de elaborado el programa anual", "Indicios de que una persona sin autorización opera como Entidad Supervisada", "Que la visita derive de la cooperación internacional"], "a": 2, "x": "Operar sin autorización es supuesto de visita de investigación.", "ref": "Arts. 8 y 10 fr. I"}, {"pat": "Especial vs investigación", "q": "La CNBV tiene indicios de los cuales puede desprenderse que una SOFIPO realizó una conducta que presuntamente contraviene la ley. ¿Qué visita procede?", "o": ["Ordinaria", "Especial, por hechos no contemplados en el programa", "De investigación", "De seguimiento"], "a": 2, "x": "«Indicios… conducta que presuntamente contravenga»: texto literal del art. 9.", "ref": "Art. 9"}, {"pat": "Especial vs investigación", "q": "La Comisión quiere verificar si una entidad atendió lo detectado en una visita de inspección del año anterior. ¿Qué visita procede?", "o": ["Ordinaria", "Especial", "De investigación", "Ninguna: se hace por vigilancia"], "a": 1, "x": "Dar seguimiento a los resultados de una visita es la fracción II del art. 8.", "ref": "Art. 8 fr. II"}, {"pat": "Notificación", "q": "¿Con qué anticipación debe notificarse a un banco la orden de una visita especial?", "o": ["Al menos 2 días hábiles", "Al menos 2 días naturales", "Puede notificarse en el acto de inicio", "Al menos 5 días hábiles"], "a": 0, "x": "Ordinarias y especiales: al menos 2 días hábiles. Investigación: puede ser en el acto.", "ref": "Art. 21 primer párrafo"}, {"pat": "Excepción 95 Bis", "q": "La CNBV practicará una visita <b>ordinaria</b> a un centro cambiario para verificar el art. 95 Bis de la LGOAAC. ¿Cuándo puede notificar la orden?", "o": ["2 días hábiles antes, como toda ordinaria", "En el acto de inicio de la visita", "5 días hábiles antes", "Sólo por medios electrónicos"], "a": 1, "x": "Para centros cambiarios, transmisores de dinero y SOFOM ENR, en 95 Bis, la orden de los tres tipos puede notificarse en el acto.", "ref": "Art. 21 segundo párrafo"}, {"pat": "Observaciones", "q": "La Comisión gira un oficio de observaciones sobre los <b>requerimientos de capitalización</b> de un banco. ¿Qué plazo tiene el banco para manifestar lo que a su derecho convenga?", "o": ["20 días hábiles", "3 días hábiles", "10 días hábiles", "20 días naturales"], "a": 1, "x": "El plazo general es de 20 días hábiles, pero puede ser de 3 en cuatro casos: registro contable, capitalización, calificación de cartera y protección del público.", "ref": "Art. 50 fr. VII inc. b)"}, {"pat": "Etapas y actas", "q": "¿Hasta cuándo puede la entidad presentar información que desvirtúe los hechos asentados en las actas parciales?", "o": ["Dentro de los 20 días hábiles siguientes a cada acta", "Hasta antes del levantamiento del acta de conclusión", "Hasta que se emita el informe general", "Sólo en la comparecencia"], "a": 1, "x": "Se deja constancia en un acta parcial del art. 34 fr. IV.", "ref": "Art. 38"}, {"pat": "Actas: testigos", "q": "Al levantar el acta de inicio, el representante legal se niega a designar testigos. ¿Qué ocurre?", "o": ["La visita se suspende", "Se reprograma con nueva orden", "Los inspectores los designan y lo hacen constar, sin afectar la validez del acta", "El acta se firma sin testigos"], "a": 2, "x": "Los testigos designados por los inspectores deben estar en el lugar donde se levanta el acta.", "ref": "Art. 26"}, {"pat": "Duración", "q": "¿Cuál es la duración máxima de una visita de inspección?", "o": ["3 meses, prorrogables una vez", "6 meses, prorrogables por una única vez por un periodo igual", "12 meses, sin prórroga", "La que señale el programa anual"], "a": 1, "x": "La prórroga requiere causas justificadas.", "ref": "Art. 20 fr. V"}]}};
+
+</script>
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+window.F4={$, $$, esc};
+/* proyección y recitar */
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const bp=$("#b-proj"), br=$("#b-rec");
+function setP(on){document.body.classList.toggle("proj",on);bp&&bp.setAttribute("aria-pressed",on);store("f4-proj",on?"1":"0")}
+function setR(on){document.body.classList.toggle("recitar",on);br&&br.setAttribute("aria-pressed",on);$$(".rec.shown").forEach(e=>e.classList.remove("shown"))}
+bp&&bp.addEventListener("click",()=>setP(!document.body.classList.contains("proj")));
+br&&br.addEventListener("click",()=>setR(!document.body.classList.contains("recitar")));
+const bpr=$("#b-print"); bpr&&bpr.addEventListener("click",()=>window.print());
+if(store("f4-proj")==="1")setP(true);
+document.addEventListener("click",e=>{const r=e.target.closest(".rec");if(r&&document.body.classList.contains("recitar"))r.classList.add("shown")});
+/* sorters: data-sorter = id en SORTERS */
+function initSorter(box){
+  const S=SORTERS[box.dataset.sorter]; let done=0, good=0;
+  const order=S.items.map((x,i)=>i); if(S.shuffle!==false){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}}
+  box.classList.add("sorter");
+  box.innerHTML=`<div class="top"><span class="eyebrow">${esc(S.prompt||"Clasifica")}</span><span class="score num" data-sc>0 de ${S.items.length}</span></div>`+
+   order.map(i=>{const it=S.items[i];return `<div class="it" data-i="${i}"><div>${it.t}</div><div class="opts">${S.cats.map(c=>`<button type="button" data-k="${c.k}">${esc(c.label)}</button>`).join("")}</div></div>`}).join("")+
+   `<div class="qbtns"><button class="btn ghost" type="button" data-reset>Reiniciar</button></div>`;
+  box.onclick=e=>{
+    if(e.target.closest("[data-reset]")){initSorter(box);return}
+    const b=e.target.closest("button[data-k]"); if(!b)return; const row=b.closest(".it"); if(row.classList.contains("done"))return;
+    const it=S.items[+row.dataset.i]; const right=[].concat(it.k); const ok=right.includes(b.dataset.k);
+    row.classList.add("done"); done++; if(ok)good++;
+    $$("button[data-k]",row).forEach(z=>{z.disabled=true; if(right.includes(z.dataset.k))z.classList.add("right"); else if(z===b)z.classList.add("wrong")});
+    row.insertAdjacentHTML("beforeend",`<div class="fb"><b class="${ok?"tick":"cross"}">${ok?"✓":"✗"}</b> ${it.x||""}${it.ref?` <span class="ref">${esc(it.ref)}</span>`:""}</div>`);
+    $("[data-sc]",box).textContent=`${good} de ${done} · ${S.items.length} en total`;
+  };
+}
+$$("[data-sorter]").forEach(initSorter);
+/* rondas: votación antes de revelar */
+$$("[data-ronda]").forEach(box=>{
+  const R=RONDAS[box.dataset.ronda]; let i=0, rev=new Array(R.items.length).fill(false), pick=new Array(R.items.length).fill(-1);
+  box.classList.add("ronda","card");
+  function draw(){
+    const q=R.items[i];
+    box.innerHTML=`<div class="head"><span class="eyebrow num">${esc(R.title)} · ${i+1} de ${R.items.length}</span><span class="dots">${R.items.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</span></div>
+     ${q.pat?`<span class="pat">Ataca: ${esc(q.pat)}</span>`:""}
+     <p class="qtext">${q.q}</p>
+     <div class="opts">${q.o.map((o,k)=>`<button type="button" class="op${pick[i]===k?" sel":""}${rev[i]&&k===q.a?" right":""}${rev[i]&&pick[i]===k&&k!==q.a?" wrong":""}" data-k="${k}"><b>${"ABCD"[k]}</b><span>${o}</span></button>`).join("")}</div>
+     <div data-fb>${rev[i]?`<div class="qfb"><b class="ok">Respuesta: ${"ABCD"[q.a]}.</b> ${q.x} <span class="ref">${esc(q.ref)}</span></div>`:`<p class="mini sub">Voten primero (mano alzada o chat: A, B, C o D). Luego revela.</p>`}</div>
+     <div class="qbtns"><button class="btn ghost" type="button" data-prev ${i===0?"disabled":""}>Anterior</button>${rev[i]?"":`<button class="btn" type="button" data-rev>Revelar</button>`}<button class="btn ghost" type="button" data-next ${i===R.items.length-1?"disabled":""}>Siguiente</button></div>`;
+  }
+  box.addEventListener("click",e=>{
+    const op=e.target.closest(".op"); if(op&&!rev[i]){pick[i]=+op.dataset.k;draw();return}
+    if(e.target.closest("[data-rev]")){rev[i]=true;draw();return}
+    if(e.target.closest("[data-next]")&&i<R.items.length-1){i++;draw();return}
+    if(e.target.closest("[data-prev]")&&i>0){i--;draw();return}
+  });
+  draw();
+});
+})();
+</script>
+<script></script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Taller del Auditor · 3.1.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#faf5ec; --surface:#ffffff; --surface-2:#f3ede1; --line:#e4dccd;
+  --fg:#1b1b1e; --muted:#5b5f62; --carbon:#393e41;
+  --verde:#64c27b; --verde-claro:#87d895; --verde-tint:#e3f4e6;
+  --morado:#a663cc; --morado-tint:#f1e6f8;
+  --turquesa:#80bcb5; --amarillo:#faa916; --coral:#ff8361; --coral-tint:#ffe9e2;
+  --no:#b9b2a5; --on-color:#1b1b1e; --on-dark:#ffffff;
+  --f-display:"Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:18px;padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(21px,3vw,27px);font-weight:800}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.hl{background:var(--verde);color:var(--on-color);padding:0 .18em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{max-width:68ch;color:var(--carbon);font-size:16px}
+.membrete{height:3px;background:var(--verde-claro);border:0;margin:14px 0 0}
+header.top{display:grid;gap:12px;padding-block:8px 18px}
+nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding-block:8px;margin-bottom:8px;scrollbar-width:thin}
+nav.idx a{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--fg);text-decoration:none;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+nav.idx a:hover{border-color:var(--morado)}
+section{padding-block:30px 6px;display:grid;gap:14px;scroll-margin-top:60px}
+.sub{color:var(--muted);max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.num{font-variant-numeric:tabular-nums}
+.ref{font-size:12px;color:var(--muted);font-weight:600}
+.mini{font-size:13px}
+/* Puertas */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.door{appearance:none;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;cursor:pointer;position:relative}
+.door:hover{border-color:var(--carbon)}
+.door[aria-pressed="true"]{outline:3px solid var(--morado);outline-offset:-1px}
+.door .n{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1}
+.door .t{font-family:var(--f-display);font-weight:700;font-size:15px}
+.door .d{font-size:13px;color:var(--muted)}
+.door .tag{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--surface-2)}
+.door.debe .tag{background:var(--amarillo);color:var(--on-color)}
+.ritmo{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-family:var(--f-display);font-weight:800;font-size:22px}
+.ritmo span.lbl{font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--muted)}
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.extra .card{display:grid;gap:6px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;justify-self:start}
+.pill.star{background:var(--amarillo);color:var(--on-color)}
+.pill.warn{background:var(--coral);color:var(--on-color)}
+/* Matriz */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+thead th{font-family:var(--f-display);font-size:12.5px;font-weight:700;background:var(--surface-2);position:sticky;top:0}
+thead th button{all:unset;cursor:pointer;display:grid;gap:2px}
+thead th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+thead th small{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:11px}
+th.col-x{background:var(--coral-tint)}
+tbody th{font-weight:600;font-size:14px;white-space:nowrap;border-left:6px solid var(--fam,var(--line))}
+tbody th button{all:unset;cursor:pointer}
+tbody th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+td.cell{text-align:center;padding:5px}
+.c{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:74px;min-height:30px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.c:focus-visible{outline:2px solid var(--morado);outline-offset:2px}
+.c.si{background:var(--verde);color:var(--on-color)}
+.c.debe{background:var(--amarillo);color:var(--on-color)}
+.c.medio{border:2px dashed var(--carbon);color:var(--fg)}
+.c.no{color:var(--no);font-weight:600}
+tr.fam-sep th, tr.fam-sep td{border-top:2px solid var(--line)}
+table.dim tbody td.cell:not(.on) .c{opacity:.28}
+table.dim thead th.on{background:var(--morado);color:var(--on-dark)}
+table.dim thead th.on small{color:var(--on-dark)}
+tbody tr.rowon th{background:var(--morado-tint)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+.legend .c{min-width:auto;cursor:default}
+.detail{border-left:6px solid var(--morado)}
+.detail h3{margin-bottom:4px}
+.detail ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+/* Asistente */
+.wiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.wiz{grid-template-columns:1fr}}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
+legend{font-family:var(--f-display);font-weight:700;font-size:14px;margin-bottom:6px}
+legend b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--carbon);color:var(--bg);font-size:12px;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{cursor:pointer;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+.chips label i{width:9px;height:9px;border-radius:50%;background:var(--fam,var(--line))}
+.chips input:checked + label{background:var(--morado);border-color:var(--morado);color:var(--on-dark)}
+.chips input:focus-visible + label{outline:2px solid var(--morado);outline-offset:2px}
+.verdict{display:grid;gap:10px;align-content:start}
+.vbadge{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:22px;padding:4px 14px;border-radius:8px}
+.vbadge.si{background:var(--verde);color:var(--on-color)}
+.vbadge.debe{background:var(--amarillo);color:var(--on-color)}
+.vbadge.no{background:var(--carbon);color:var(--bg)}
+.vbadge.medio{border:2px dashed var(--carbon)}
+.req{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.req li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:14px}
+.req li::before{content:"✓";font-weight:800;color:var(--verde)}
+.note{font-size:13.5px;background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.note.warn{background:var(--coral-tint)}
+/* Requisitos */
+table.req-t{min-width:980px;font-size:13px}
+table.req-t td{vertical-align:top}
+table.req-t tbody th{border-left:0;white-space:normal;min-width:150px;font-size:13px}
+.yes{font-weight:700}
+.y::before{content:"Sí · ";font-weight:800;color:var(--verde)}
+.n0{color:var(--muted)}
+.colfilter{display:flex;flex-wrap:wrap;gap:6px}
+.colfilter button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.colfilter button[aria-pressed="true"]{background:var(--carbon);color:var(--bg);border-color:var(--carbon)}
+/* Transferencias */
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;counter-reset:t}
+.tl .card{display:grid;gap:6px;border-top:5px solid var(--amarillo)}
+.tl .k{font-family:var(--f-display);font-weight:800;font-size:18px}
+/* Trampas */
+.traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.trap{display:grid;gap:6px;border:2px dashed var(--carbon);background:var(--surface)}
+.trap h3{font-size:15px}
+/* Práctica */
+.quiz{display:grid;gap:12px}
+.qbox{display:grid;gap:12px}
+.qtext{font-size:17px;font-weight:600;max-width:70ch}
+.qbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:9px 18px;border-radius:8px;border:0;cursor:pointer;background:var(--morado);color:var(--on-dark)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.qfb{font-size:14.5px;border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.qfb b.ok{color:var(--verde)} .qfb b.bad{color:var(--coral)}
+.score{font-family:var(--f-display);font-weight:800}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted);display:grid;gap:6px;max-width:80ch}
+@media (prefers-reduced-motion:no-preference){ .c,.door,.chips label{transition:background .15s, opacity .15s, border-color .15s} }
+
+
+/* ---- Frente 4: piezas nuevas ---- */
+.topbar{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:9px 16px;background:#1b1b1e;color:#fff;font:600 13px/1.3 Inter,Arial,sans-serif}
+.topbar a{color:#fff}
+.topbar .sp{flex:1}
+.topbar button{font:inherit;font-size:12px;color:#fff;background:transparent;border:1px solid #6b6f72;border-radius:999px;padding:4px 10px;cursor:pointer}
+.topbar button[aria-pressed="true"]{background:var(--verde);color:#1b1b1e;border-color:var(--verde)}
+body.proj{font-size:18px}
+body.proj .wrap{max-width:1280px}
+body.proj .qtext{font-size:24px}
+body.proj .sorter .it{font-size:17px}
+body.proj table{font-size:16px}
+.rec{transition:filter .15s}
+body.recitar .rec:not(.shown){filter:blur(6px);cursor:pointer;user-select:none}
+.hint-rec{display:none}
+body.recitar .hint-rec{display:block}
+/* ganchos */
+.hooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.hook{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--verde);border-radius:var(--r);padding:12px 14px;display:grid;gap:4px;align-content:start}
+.hook .n{font-family:var(--f-display);font-weight:800;font-size:38px;line-height:1}
+.hook .t{font-family:var(--f-display);font-weight:700;font-size:14px}
+.hook .d{font-size:12.5px;color:var(--muted)}
+.hook.warn{border-top-color:var(--coral)}
+.col .hooks{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+.col .hook .n{font-size:30px}
+.hook.star{border-top-color:var(--amarillo)}
+/* tablas de contenido */
+table.t2{min-width:720px;font-size:14px}
+table.t2 td,table.t2 th{vertical-align:top}
+table.t2 tbody th{border-left:0;white-space:normal;min-width:170px;font-size:14px}
+td.dif{background:var(--coral-tint)}
+td.ok{background:var(--verde-tint)}
+td.na{color:var(--no)}
+.tick{font-weight:800;color:var(--verde)}
+.cross{font-weight:800;color:var(--coral)}
+.k{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:var(--surface-2);margin-right:4px}
+.k.g{background:var(--verde);color:var(--on-color)} .k.m{background:var(--morado);color:var(--on-dark)} .k.a{background:var(--amarillo);color:var(--on-color)} .k.c{background:var(--coral);color:var(--on-color)} .k.t{background:var(--turquesa);color:var(--on-color)}
+.lit{font-style:italic}
+.lit::before{content:"«"} .lit::after{content:"»"}
+.regla{display:grid;gap:4px;border-left:6px solid var(--verde);background:var(--surface);border-radius:8px;padding:10px 14px}
+.regla b{font-family:var(--f-display)}
+.crit{font-size:12px;color:var(--muted);font-style:italic}
+/* sorter */
+.sorter{display:grid;gap:8px}
+.sorter .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.sorter .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px}
+@media (max-width:700px){.sorter .it{grid-template-columns:1fr}}
+.sorter .opts{display:flex;flex-wrap:wrap;gap:6px}
+.sorter .opts button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer}
+.sorter .opts button:disabled{cursor:default;opacity:.55}
+.sorter .opts button.right{background:var(--verde);color:var(--on-color);opacity:1;border-color:var(--verde)}
+.sorter .opts button.wrong{background:var(--coral);color:var(--on-color);opacity:1;border-color:var(--coral)}
+.sorter .fb{grid-column:1/-1;font-size:13.5px;color:var(--carbon)}
+.sorter .fb .ref{margin-left:6px}
+.sorter .it.done{border-color:var(--carbon)}
+/* ronda */
+.ronda{display:grid;gap:12px}
+.ronda .head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ronda .opts{display:grid;gap:8px}
+.ronda .op{all:unset;cursor:pointer;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.ronda .op b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface-2);font-family:var(--f-display)}
+.ronda .op.sel{outline:3px solid var(--morado);outline-offset:-2px}
+.ronda .op.right{background:var(--verde-tint);border-color:var(--verde)}
+.ronda .op.right b{background:var(--verde);color:var(--on-color)}
+.ronda .op.wrong{background:var(--coral-tint);border-color:var(--coral)}
+.ronda .op:focus-visible{outline:2px solid var(--morado)}
+.ronda .pat{font-size:12px;font-weight:700;color:var(--muted)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--carbon)}
+/* línea de tiempo */
+.tline{display:grid;gap:0;counter-reset:st}
+.tline .st{display:grid;grid-template-columns:44px 1fr;gap:12px;position:relative;padding-bottom:14px}
+.tline .st::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--verde);color:var(--on-color);font-family:var(--f-display);font-weight:800;z-index:1}
+.tline .st::after{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--line)}
+.tline .st:last-child::after{display:none}
+.tline .st .card{display:grid;gap:4px;padding:10px 14px}
+.tline .st.alert::before{background:var(--coral)}
+/* asistente */
+.steps{display:grid;gap:12px}
+.qstep{display:grid;gap:8px}
+.qstep[hidden]{display:none}
+.yn{display:flex;gap:8px;flex-wrap:wrap}
+.yn button{font:inherit;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--morado);color:var(--on-dark);border-color:var(--morado)}
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px dashed var(--carbon);background:var(--surface);color:var(--fg);cursor:pointer;text-align:left}
+.cases button[aria-pressed="true"]{background:var(--carbon);color:var(--bg)}
+.vbadge.c1{background:var(--verde);color:var(--on-color)}
+.vbadge.c2{background:var(--verde-claro);color:var(--on-color)}
+.vbadge.c3{background:var(--amarillo);color:var(--on-color)}
+.vbadge.c4{background:var(--coral);color:var(--on-color)}
+.vbadge.c5{background:var(--surface-2);border:2px dashed var(--carbon)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.col h3{margin-bottom:6px}
+.col ol,.col ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.col.gafi{border-top:5px solid var(--morado)} .col.bas{border-top:5px solid var(--turquesa)} .col.dcg{border-top:5px solid var(--amarillo)}
+@media (max-width:700px){table.t2{min-width:600px;font-size:13px} table.t2 tbody th{min-width:110px} .hook .n{font-size:30px}}
+@media print{.topbar,nav.idx,.btn,.yn,.cases,.sorter .opts{display:none!important} body{background:#fff} .card{break-inside:avoid}}
+
+</style>
+</head>
+<body>
+<nav class="topbar" aria-label="Repaso"><b style="font-family:Montserrat,Arial,sans-serif;letter-spacing:.04em">Módulo 3 · Repaso</b><a href="../index.html">← Todos los temas</a><span class="sp"></span><button type="button" id="b-proj" aria-pressed="false">Modo proyección</button><button type="button" id="b-rec" aria-pressed="false">Modo recitar</button><button type="button" id="b-print">Imprimir</button></nav>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">360Educa · Módulo 3 · Repaso de resultados · Certificación CNBV PLD/FT · Temario agosto 2026</div>
+  <h1>3.1.1 · <span class="hl">Taller del Auditor</span></h1>
+  <p class="lede">Cómo se califica, quién puede firmar y dónde va cada hallazgo. Construido sobre los errores reales del grupo en los simuladores: CUARTO contra QUINTO, la escala del OCTAVO B y los plazos de 5 años y 60 días.</p>
+  <p class="mini sub hint-rec">Modo recitar: las celdas difuminadas se descubren con un toque. Dilas en voz alta antes de tocar.</p>
+  <hr class="membrete">
+</header>
+<nav class="idx" aria-label="Secciones"><a href="#numeros">En números</a><a href="#mapa12">¿Qué lineamiento es?</a><a href="#quien">CUARTO o QUINTO</a><a href="#calificador">Calificador</a><a href="#secciones">A·B·C·D</a><a href="#vida">La vida del informe</a><a href="#trampas">Trampas</a><a href="#practica">Ronda 3.1.1</a></nav>
+
+<section id="numeros">
+  <h2>El informe en números</h2>
+  <p class="sub">Los números que el examen convierte en distractores. Activa <b>Modo recitar</b> arriba y dilos antes de descubrirlos.</p>
+  <div class="hooks">
+    <div class="hook"><span class="n rec">12</span><span class="t">Lineamientos</span><span class="d">PRIMERO a DÉCIMO SEGUNDO, en 4 apartados (A a D).</span></div>
+    <div class="hook"><span class="n rec">3</span><span class="t">Objetos</span><span class="d">Contratación · elaboración · remisión.</span><span class="ref">PRIMERO</span></div>
+    <div class="hook"><span class="n rec">9 + 4</span><span class="t">Auditor: requisitos y documentos</span><span class="d">Fracciones I a IX y documentos a) a d).</span><span class="ref">CUARTO</span></div>
+    <div class="hook"><span class="n rec">3</span><span class="t">Persona Moral</span><span class="d">Independencia · recursos · no Control.</span><span class="ref">QUINTO</span></div>
+    <div class="hook star"><span class="n rec">4</span><span class="t">Secciones del informe</span><span class="d">A Resultados · B Cumplimiento regulatorio · C Asuntos clave · D Hallazgos.</span><span class="ref">OCTAVO</span></div>
+    <div class="hook star"><span class="n rec">5</span><span class="t">Sentidos de calificación</span><span class="d">Cumple · Mayoritariamente · Parcialmente · No cumple · No aplica.</span><span class="ref">OCTAVO B</span></div>
+    <div class="hook warn"><span class="n rec">60</span><span class="t">Días <u>naturales</u></span><span class="d">Para remitir, siguientes al cierre del ejercicio revisado.</span><span class="ref">Bancos 60ª</span></div>
+    <div class="hook warn"><span class="n rec">5</span><span class="t">Años de conservación</span><span class="d">Contados desde que se remite / presenta el informe.</span><span class="ref">DÉCIMO SEGUNDO · QUINTO</span></div>
+    <div class="hook"><span class="n rec">3 / 5</span><span class="t">Años de experiencia</span><span class="d">3 con licenciatura; 5 sin ella.</span><span class="ref">CUARTO fr. I</span></div>
+    <div class="hook"><span class="n rec">5</span><span class="t">Variables del análisis de Riesgos</span><span class="d">Productos · clientes · países · transacciones y canales · infraestructura tecnológica.</span><span class="ref">SEXTO fr. II</span></div>
+  </div>
+</section>
+
+<section id="mapa12">
+  <h2>¿Qué lineamiento es?</h2>
+  <p class="sub">En el examen real preguntaron «¿qué dice el SÉPTIMO?» contra «¿qué dice el OCTAVO?». Lee la tabla por renglón; en Modo recitar, tapa el contenido y dilo.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th>Lineamiento</th><th>Apartado</th><th>Contenido</th><th>Lo que más preguntan</th></tr></thead>
+   <tbody>
+    <tr><th>PRIMERO</th><td>A</td><td class="rec">Objeto</td><td class="rec">3 objetos: contratación · elaboración · remisión. Objeto del informe: dar información para hacer más eficientes procesos y establecer planes de acción.</td></tr>
+    <tr><th>SEGUNDO</th><td>A</td><td class="rec">Definiciones</td><td class="rec">Auditor = <b>persona física</b> que elabora y firma; puede formar parte de una Persona Moral.</td></tr>
+    <tr><th>TERCERO</th><td>A</td><td class="rec">Interpretación y consultas</td><td class="rec">Vicepresidencia de Supervisión de Procesos Preventivos de la CNBV.</td></tr>
+    <tr><th>CUARTO</th><td>B</td><td class="rec">Requisitos del Auditor</td><td class="rec">9 requisitos + 4 documentos que recaba el Sujeto Supervisado.</td></tr>
+    <tr><th>QUINTO</th><td>B</td><td class="rec">Requisitos de la Persona Moral</td><td class="rec">Independencia · recursos · no Control · papeles de trabajo 5 años.</td></tr>
+    <tr><th>SEXTO</th><td>C</td><td class="rec">Planeación de la auditoría</td><td class="rec">Metodología con 3 criterios: cuestionario inicial · análisis de Riesgos · revisión de información.</td></tr>
+    <tr class="fam-sep"><th>SÉPTIMO</th><td>C</td><td class="rec">Programa de trabajo</td><td class="rec">Calendario · temas · <b>pruebas a los sistemas automatizados</b> · <b>revisiones aleatorias a expedientes</b> · recursos · seguimiento a acciones correctivas.</td></tr>
+    <tr><th>OCTAVO</th><td>C</td><td class="rec">Secciones del Informe</td><td class="rec">A (14 fracciones) · B (5 sentidos) · C · D.</td></tr>
+    <tr class="fam-sep"><th>NOVENO</th><td>D</td><td class="rec">Redacción y estructura</td><td class="rec">Español · tipografía de al menos 10 puntos · índice · divisiones en negrillas.</td></tr>
+    <tr><th>DÉCIMO</th><td>D</td><td class="rec">Pruebas y documentación sustento</td><td class="rec">Cada manifestación sustentada en pruebas que acrediten su veracidad.</td></tr>
+    <tr><th>DÉCIMO PRIMERO</th><td>D</td><td class="rec">Conocimiento y remisión</td><td class="rec">Lo conocen la <b>dirección general y el Comité</b> (o el OC); se remite por SITI PLD/FT con escrito firmado y la carta del CUARTO inc. d).</td></tr>
+    <tr><th>DÉCIMO SEGUNDO</th><td>D</td><td class="rec">Conservación</td><td class="rec">No menor a <b>5 años</b> desde que remitan el informe.</td></tr>
+   </tbody></table></div>
+  <p class="mini sub">Apartados: A Disposiciones generales · B Del Auditor · C De la elaboración del Informe · D Del Informe de Auditoría.</p>
+</section>
+
+<section id="quien">
+  <h2>CUARTO o QUINTO: ¿a quién le toca?</h2>
+  <p class="sub">El patrón que más falló (45 % del grupo en el reactivo de la Persona Moral). La clave está en el SEGUNDO: <b>el Auditor siempre es persona física</b>. Cumple el CUARTO aunque trabaje dentro de un despacho. El QUINTO <b>se suma</b> cuando el Sujeto contrata a una Persona Moral.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th>Requisito</th><th>Auditor (persona física)<br><small>CUARTO</small></th><th>Persona Moral<br><small>QUINTO</small></th></tr></thead>
+   <tbody>
+    <tr><th>Licenciatura + 3 años de experiencia PLD/FT (o 5 años sin licenciatura)</th><td class="ok rec">✓ fr. I</td><td class="na">—</td></tr>
+    <tr><th>Certificado vigente al elaborar y firmar</th><td class="ok rec">✓ fr. II</td><td class="na">—</td></tr>
+    <tr><th>No sentenciado por delitos patrimoniales</th><td class="ok rec">✓ fr. III</td><td class="na">—</td></tr>
+    <tr><th>No inhabilitado; no en concurso mercantil</th><td class="ok rec">✓ fr. IV</td><td class="na">—</td></tr>
+    <tr><th>No ser (ni tener ofrecimiento para ser) consejero o directivo</th><td class="ok rec">✓ fr. V <small>salvo auditor interno</small></td><td class="na">—</td></tr>
+    <tr><th>No ser accionista, órgano de gobierno, OC, funcionario, apoderado o empleado</th><td class="ok rec">✓ fr. VI <small>salvo auditor interno</small></td><td class="na">—</td></tr>
+    <tr><th>No tener litigio pendiente con el Sujeto</th><td class="ok rec">✓ fr. VII</td><td class="na">—</td></tr>
+    <tr><th>No tener suspendido, cancelado o revocado su registro de auditor o certificación</th><td class="ok rec">✓ fr. VIII</td><td class="na">—</td></tr>
+    <tr><th>No estar en listas oficiales</th><td class="ok rec">✓ fr. IX</td><td class="na">—</td></tr>
+    <tr class="fam-sep"><th>Ser y mantenerse independiente (del contrato a la emisión del informe)</th><td class="dif rec">aplica al Auditor y al equipo <b>vía</b> QUINTO</td><td class="ok rec">✓ fr. I</td></tr>
+    <tr><th>Sin independencia si el Auditor o un socio fue, en el año anterior al contrato, OC, auditor interno, DG, representante legal o de los 3 niveles inferiores (también en el grupo)</th><td class="na">—</td><td class="ok rec">✓ fr. I inc. a)</td></tr>
+    <tr><th>Sin independencia si sus ingresos dependen del resultado del informe</th><td class="na">—</td><td class="ok rec">✓ fr. I inc. b)</td></tr>
+    <tr><th>Recursos técnicos, humanos, financieros y administrativos suficientes</th><td class="na">—</td><td class="ok rec">✓ fr. II</td></tr>
+    <tr><th>No ejercer el Control en el Sujeto</th><td class="na">—</td><td class="ok rec">✓ fr. III</td></tr>
+    <tr><th>Papeles de trabajo a disposición: mínimo 5 años desde la presentación ante la CNBV</th><td class="na">—</td><td class="ok rec">✓ último párrafo</td></tr>
+   </tbody></table></div>
+  <div class="regla"><b>Regla para el examen</b><span>Si la pregunta dice «Persona Moral», busca las tres del QUINTO: <b>independencia · recursos · no Control</b>. «Delitos patrimoniales», «apoderado» o «litigio» son del Auditor (CUARTO).</span><span class="crit">Agrupación en tres palabras: criterio didáctico 360Educa sobre el texto del QUINTO.</span></div>
+  <div id="s-quien" data-sorter="quien"></div>
+</section>
+
+<section id="calificador">
+  <h2>Calificador asistido · OCTAVO B</h2>
+  <p class="sub">Lo que más se discutió: <b>¿Parcial o No cumple?</b> Se califica <b>cada obligación</b> de la sección A, no cada reporte. Elige un caso o contesta las preguntas; el asistente te da el sentido, lo mínimo que debe incluir y el fundamento.</p>
+  <div class="cases" id="cal-cases"></div>
+  <div class="wiz">
+    <div class="card steps" id="cal-steps"></div>
+    <div class="card verdict" id="cal-out" aria-live="polite"></div>
+  </div>
+  <div class="tablewrap"><table class="t2">
+    <thead><tr><th>Sentido</th><th>Cuándo (texto del OCTAVO B)</th><th>Mínimo que incluye</th><th>Palabra clave</th></tr></thead>
+    <tbody>
+     <tr><th>1. Cumple</th><td class="rec">La eficacia se demuestra con el cumplimiento. Sólo si se demuestra que <b>no se requieren ni recomiendan mejoras</b>.</td><td class="rec">Nada adicional.</td><td class="rec">cero mejoras</td></tr>
+     <tr><th>2. Cumple Mayoritariamente</th><td class="rec">La eficacia <b>no puede ser completamente</b> demostrada.</td><td class="rec">≥ 1 <b>recomendación</b> de mejora; hallazgo «en su caso».</td><td class="rec">completamente</td></tr>
+     <tr><th>3. Cumple Parcialmente</th><td class="rec">La eficacia no puede ser demostrada <b>por no contar con evidencia objetiva</b>.</td><td class="rec">≥ 1 <b>hallazgo</b>; recomendaciones «en su caso».</td><td class="rec">sin evidencia</td></tr>
+     <tr><th>4. No cumple</th><td class="rec">No cubre los elementos necesarios, <b>o bien</b>, es un incumplimiento que <b>actualiza una sanción</b>.</td><td class="rec">≥ 1 <b>hallazgo</b>.</td><td class="rec">sanción</td></tr>
+     <tr><th>5. No aplica</th><td class="rec">El requisito no surte vigencia por características estructurales, legales o institucionales.</td><td class="rec">El Auditor verifica que la exclusión no actualice incumplimiento y sea consistente con su análisis de Riesgos.</td><td class="rec">no surte vigencia</td></tr>
+    </tbody></table></div>
+  <div class="regla"><b>Regla para el examen</b><span>Si hay <b>evidencia</b> de que se incumplió (un reporte tarde, un elemento faltante), <b>no es Parcial: es No cumple</b>. Parcial es cuando <b>no hay evidencia</b> para demostrar el cumplimiento.</span><span class="crit">El orden de las preguntas del asistente es criterio didáctico 360Educa construido sobre el OCTAVO B; la norma no fija un orden.</span></div>
+</section>
+
+<section id="secciones">
+  <h2>A · B · C · D: ¿dónde va cada cosa?</h2>
+  <p class="sub">La sección C sólo existe <b>«en caso de requerirse»</b>; la D siempre lleva los hallazgos con su acción correctiva, plazos y responsables.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th>Sección</th><th>Nombre</th><th>Qué contiene</th><th>Trampa frecuente</th></tr></thead>
+   <tbody>
+    <tr><th>A</th><td class="rec">Resultados de la revisión</td><td class="rec">El resultado de la revisión de <b>todas</b> las obligaciones; 14 fracciones (identificación, metodología EBR, conocimiento del Cliente, reportes, estructuras, capacitación, infraestructura tecnológica, empleados, conservación, listas, intercambio, Modelos Novedosos, otra información, comisionistas).</td><td>Pensar que sólo se revisan las obligaciones con riesgo alto.</td></tr>
+    <tr><th>B</th><td class="rec">Cumplimiento regulatorio</td><td class="rec">La calificación de cada obligación de la sección A en uno de los <b>5 sentidos</b>.</td><td>Confundir B (calificación) con D (hallazgos).</td></tr>
+    <tr><th>C</th><td class="rec">Asuntos clave de la auditoría</td><td class="rec">«En caso de requerirse»: aspectos, condiciones o información <b>preocupante</b>. 4 supuestos: medidas no acordes a servicios, productos u Operaciones · controles sin eficacia operativa para mitigar Riesgos · hallazgos en <b>infracción grave</b> · irregularidades que pudieran favorecer los delitos de los arts. <b>139 Quáter o 400 Bis</b> del CPF.</td><td>Creer que la sección C es obligatoria o que es la D.</td></tr>
+    <tr><th>D</th><td class="rec">Hallazgos, acciones correctivas y recomendaciones de mejora</td><td class="rec">Hallazgos con su acción correctiva y recomendaciones, con <b>plazos, responsables</b> de implementarlas y de supervisarlas. Además: seguimiento al informe del <b>año inmediato anterior</b> y, en su caso, a observaciones de la CNBV del año anterior.</td><td>Decir que D es «Asuntos clave».</td></tr>
+   </tbody></table></div>
+  <div id="s-cd" data-sorter="cd"></div>
+</section>
+
+<section id="vida">
+  <h2>La vida del informe</h2>
+  <p class="sub">De la planeación a la conservación. Las tarjetas en coral son las que el grupo más confundió.</p>
+  <div class="tline">
+    <div class="st"><div class="card"><h3>Periodo revisado: enero a diciembre</h3><p class="mini">O desde el inicio de operaciones a diciembre. Lo revisa auditoría interna o un auditor externo independiente. <b>Ningún miembro del Comité</b> puede participar en la valoración.</p><span class="ref">Bancos 60ª primer párrafo</span></div></div>
+    <div class="st"><div class="card"><h3>Planeación (SEXTO)</h3><p class="mini">Metodología con al menos: cuestionario inicial · análisis de Riesgos (5 variables) · revisión de la información. El análisis sirve para verificar que la metodología de evaluación de Riesgos del Sujeto es coherente con sus características.</p><span class="ref">SEXTO</span></div></div>
+    <div class="st alert"><div class="card"><h3>Programa de trabajo (SÉPTIMO)</h3><p class="mini">Calendario, temas a evaluar, <b>pruebas a los sistemas automatizados</b>, <b>revisiones aleatorias a expedientes</b>, recursos del Sujeto y cómo dará seguimiento a las acciones correctivas. Dentro o fuera de las instalaciones, según acuerden.</p><span class="ref">SÉPTIMO</span></div></div>
+    <div class="st"><div class="card"><h3>Informe con sus secciones (OCTAVO)</h3><p class="mini">A · B · C (si se requiere) · D. Redactado en español, letra de 10 puntos o más, con índice (NOVENO), y sustentado en pruebas (DÉCIMO).</p><span class="ref">OCTAVO a DÉCIMO</span></div></div>
+    <div class="st alert"><div class="card"><h3>Lo conocen la dirección general y el Comité</h3><p class="mini">O, en su caso, el Oficial de Cumplimiento: para evaluar la eficacia operativa y dar seguimiento a la acción correctiva.</p><span class="ref">DÉCIMO PRIMERO primer párrafo · Bancos 60ª</span></div></div>
+    <div class="st"><div class="card"><h3>Remisión por SITI PLD/FT</h3><p class="mini">Escrito firmado por representante legal, administrador único u OC con: fecha en que DG y Comité/OC lo conocieron · periodo de revisión · nombre completo del Auditor · número y fecha de su Certificado · nombre de la Persona Moral. Se adjunta la carta bajo protesta (CUARTO inc. d). PDF con texto seleccionable.</p><span class="ref">DÉCIMO PRIMERO</span></div></div>
+    <div class="st alert"><div class="card"><h3>Plazo: 60 días naturales</h3><p class="mini">Siguientes al cierre del ejercicio al que corresponda la revisión. Alumnos reportan que el examen real ofreció «60 días <b>hábiles</b>»: la norma dice <b>naturales</b>.</p><span class="ref">Bancos 60ª tercer párrafo</span></div></div>
+    <div class="st alert"><div class="card"><h3>Conservación: 5 años</h3><p class="mini">El Sujeto: toda la información, no menor a 5 años <b>desde que remita</b> el informe. La Persona Moral: papeles de trabajo, mínimo 5 años <b>desde la presentación ante la CNBV</b>.</p><span class="ref">DÉCIMO SEGUNDO · QUINTO último párrafo · Bancos 60ª</span></div></div>
+  </div>
+</section>
+
+<section id="trampas">
+  <h2>Trampas</h2>
+  <div class="traps">
+    <div class="card trap"><h3>«Se envió tarde, pero se envió: Parcial»</h3><p class="mini">No. Hay evidencia de un incumplimiento que actualiza sanción: <b>No cumple</b>. El reporte se señala como presentado fuera de plazo.</p><span class="ref">OCTAVO B num. 4 · OCTAVO A fr. IV último párrafo</span></div>
+    <div class="card trap"><h3>«Parcial = cumplió a medias»</h3><p class="mini">No. Parcial es <b>sin evidencia objetiva</b> para demostrar el cumplimiento.</p><span class="ref">OCTAVO B num. 3</span></div>
+    <div class="card trap"><h3>«Mayoritariamente exige un hallazgo»</h3><p class="mini">Exige al menos una <b>recomendación</b>; el hallazgo es «en su caso». Parcial y No cumple exigen hallazgo.</p><span class="ref">OCTAVO B num. 2 a 4</span></div>
+    <div class="card trap"><h3>«Delitos patrimoniales: requisito de la Persona Moral»</h3><p class="mini">Es del Auditor (CUARTO fr. III). La PM: independencia, recursos, no Control.</p><span class="ref">CUARTO · QUINTO</span></div>
+    <div class="card trap"><h3>«5 años desde la elaboración»</h3><p class="mini">Desde la <b>presentación</b> ante la Comisión (papeles de trabajo) o desde que se <b>remite</b> (DÉCIMO SEGUNDO).</p><span class="ref">QUINTO · DÉCIMO SEGUNDO</span></div>
+    <div class="card trap"><h3>«El auditor interno no puede hacerlo»</h3><p class="mini">Sí puede: las fracciones V y VI del CUARTO lo exceptúan expresamente.</p><span class="ref">CUARTO fr. V y VI · Bancos 60ª</span></div>
+    <div class="card trap"><h3>«Pruebas a sistemas: en la planeación»</h3><p class="mini">Van en el <b>programa de trabajo</b> (SÉPTIMO). La planeación (SEXTO) es cuestionario, análisis de Riesgos y revisión de información.</p><span class="ref">SEXTO · SÉPTIMO</span></div>
+    <div class="card trap"><h3>«Lo conoce el Consejo»</h3><p class="mini">Lo conocen la <b>dirección general y el Comité</b> o, en su caso, el OC.</p><span class="ref">DÉCIMO PRIMERO</span></div>
+  </div>
+</section>
+
+<section id="practica">
+  <h2>Ronda 3.1.1 · voten antes de revelar</h2>
+  <p class="sub">Diez reactivos nuevos, uno por patrón de error del grupo. Proyecta, cuenten votos A·B·C·D y luego revela.</p>
+  <div data-ronda="r311"></div>
+</section>
+
+<footer><span>Fuente: Lineamientos para la elaboración del Informe de Auditoría para evaluar el cumplimiento de las DCG PLD/FT (DOF 18-oct-2021) y DCG Bancos 60ª (compilada al 28-ago-2024). Citas por lineamiento, fracción e inciso.</span><span>Reglas de examen, agrupaciones y orden del asistente: criterio didáctico 360Educa. Material didáctico; no sustituye la publicación oficial.</span></footer>
+</div>
+<script>
+const SORTERS={"quien": {"prompt": "¿CUARTO (Auditor) o QUINTO (Persona Moral)?", "cats": [{"k": "c", "label": "CUARTO · Auditor"}, {"k": "q", "label": "QUINTO · Persona Moral"}], "items": [{"t": "Licenciatura y 3 años de experiencia en PLD/FT", "k": "c", "ref": "CUARTO fr. I"}, {"t": "Certificado vigente al elaborar y firmar el informe", "k": "c", "ref": "CUARTO fr. II"}, {"t": "No haber sido sentenciado por delitos patrimoniales", "k": "c", "x": "Distractor clásico en reactivos de la Persona Moral.", "ref": "CUARTO fr. III"}, {"t": "No ser apoderado ni empleado del Sujeto Supervisado", "k": "c", "x": "Salvo el auditor interno.", "ref": "CUARTO fr. VI"}, {"t": "No tener litigio pendiente con el Sujeto Supervisado", "k": "c", "ref": "CUARTO fr. VII"}, {"t": "No encontrarse en las listas oficiales", "k": "c", "ref": "CUARTO fr. IX"}, {"t": "Ser y mantenerse independiente desde el contrato hasta la emisión del informe", "k": "q", "ref": "QUINTO fr. I"}, {"t": "Que sus ingresos no dependan del resultado del propio informe", "k": "q", "x": "Si dependen, no hay independencia.", "ref": "QUINTO fr. I inc. b)"}, {"t": "Contar con recursos técnicos, humanos, financieros y administrativos suficientes", "k": "q", "ref": "QUINTO fr. II"}, {"t": "No ejercer el Control en el Sujeto Supervisado", "k": "q", "ref": "QUINTO fr. III"}, {"t": "Papeles de trabajo a disposición mínimo 5 años desde la presentación ante la CNBV", "k": "q", "x": "Se conviene con la Persona Moral.", "ref": "QUINTO último párrafo"}, {"t": "Carta bajo protesta de decir verdad sobre los requisitos III a VIII", "k": "c", "x": "Documento que recaba el Sujeto Supervisado del Auditor; se remite con el informe.", "ref": "CUARTO inc. d) · DÉCIMO PRIMERO"}]}, "cd": {"prompt": "¿Va también a Asuntos clave (C) o sólo a Hallazgos (D)?", "cats": [{"k": "c", "label": "C + D"}, {"k": "d", "label": "Sólo D"}], "items": [{"t": "El Sujeto no cuenta con sistema automatizado: sus controles no tienen eficacia para mitigar Riesgos", "k": "c", "x": "Supuesto de controles sin eficacia operativa. Así lo calificó la clave del Simulador 2.", "ref": "OCTAVO C"}, {"t": "Las medidas del Manual no son acordes a los productos que ofrece el Sujeto", "k": "c", "x": "Supuesto textual de «preocupante».", "ref": "OCTAVO C"}, {"t": "Detecta irregularidades que, a su juicio, pudieran favorecer el delito del art. 139 Quáter del CPF", "k": "c", "ref": "OCTAVO C"}, {"t": "Omitió expedir constancias de capacitación a 2 de 5 empleados", "k": "d", "x": "Hallazgo con su acción correctiva; no es «preocupante» por sí mismo.", "ref": "OCTAVO A fr. VI inc. d) · D"}, {"t": "Un reporte trimestral de Operaciones Relevantes se presentó tarde", "k": "d", "x": "Se califica No cumple en B, se señala como fuera de plazo y va a D.", "ref": "OCTAVO A fr. IV · D"}, {"t": "Recomienda precisar la redacción de un procedimiento del Manual", "k": "d", "x": "Es una recomendación de mejora.", "ref": "OCTAVO D"}, {"t": "En la muestra, 3 de 200 expedientes carecen de un dato", "k": "d", "ref": "OCTAVO A fr. I inc. b) · D"}]}};
+const RONDAS={"r311": {"title": "Ronda 3.1.1", "items": [{"pat": "CUARTO vs QUINTO", "q": "Un banco contratará a «Auditores Integrales, S.C.». ¿Cuál de estos requisitos corresponde a la Persona Moral y <b>no</b> al Auditor persona física?", "o": ["No haber sido sentenciado por delitos patrimoniales", "No tener litigio pendiente con el Sujeto Supervisado", "Contar con recursos técnicos, humanos, financieros y administrativos suficientes", "Contar con el Certificado vigente"], "a": 2, "x": "Los recursos suficientes son del QUINTO. Las otras tres son requisitos del Auditor.", "ref": "QUINTO fr. II · CUARTO fr. II, III y VII"}, {"pat": "CUARTO: excepción del auditor interno", "q": "El auditor interno de una SOFIPO, empleado de la propia entidad, elaborará el Informe de Auditoría. ¿Es posible?", "o": ["No: el CUARTO prohíbe ser empleado del Sujeto Supervisado", "Sí: las prohibiciones de ser directivo o empleado no aplican al auditor interno del propio Sujeto", "Sólo con autorización previa de la CNBV", "Sólo si el Comité lo designa por mayoría"], "a": 1, "x": "Las fracciones V y VI del CUARTO exceptúan al auditor interno del propio Sujeto Supervisado.", "ref": "CUARTO fr. V y VI"}, {"pat": "QUINTO: independencia", "q": "Un socio del despacho contratado fue Oficial de Cumplimiento de una casa de bolsa del mismo grupo financiero hasta ocho meses antes de firmar el contrato. ¿Qué procede?", "o": ["Nada: fue en otra entidad", "No existe independencia: en el año inmediato anterior fue OC de un Sujeto del mismo grupo", "Basta con declararlo en la carta bajo protesta", "Hay independencia si el socio no participa en la revisión"], "a": 1, "x": "El QUINTO fr. I inc. a) i) incluye al Auditor o a <b>algún socio</b> que haya sido OC en el Sujeto o en otro del mismo grupo, en el año anterior al contrato.", "ref": "QUINTO fr. I inc. a)"}, {"pat": "Parcial vs No cumple", "q": "En la revisión de 12 meses, uno de los reportes de Operaciones Inusuales se presentó tres días después del plazo; los demás, en tiempo. ¿Cómo se califica la obligación de presentarlos en tiempo y forma?", "o": ["Cumple Mayoritariamente, con una recomendación", "Cumple Parcialmente, porque cumplió con la mayoría", "No cumple: hay evidencia de un incumplimiento que actualiza sanción, y el reporte se señala como fuera de plazo", "No aplica"], "a": 2, "x": "Se califica la <b>obligación</b> (presentar en tiempo y forma). Hay evidencia del incumplimiento, así que no es Parcial (sin evidencia). Además, el Auditor señala las operaciones presentadas fuera de plazo.", "ref": "OCTAVO A fr. IV inc. b) y último párrafo · OCTAVO B num. 4"}, {"pat": "Escala OCTAVO B", "q": "Según el OCTAVO B, ¿cuándo procede calificar «Cumple Parcialmente»?", "o": ["Cuando la obligación se cumplió sólo en parte", "Cuando la eficacia no puede demostrarse por no contar con evidencia objetiva", "Cuando el cumplimiento fue extemporáneo", "Cuando el Auditor recomienda mejoras"], "a": 1, "x": "Texto literal: «por no contar con evidencia objetiva que permita demostrar el mismo».", "ref": "OCTAVO B num. 3"}, {"pat": "Escala OCTAVO B", "q": "¿Qué debe incluir, como mínimo, una calificación de «Cumple Mayoritariamente»?", "o": ["Al menos un hallazgo", "Al menos una recomendación de mejora y, en su caso, algún hallazgo", "Un plan de acción aprobado por el Comité", "Nada adicional"], "a": 1, "x": "Mayoritariamente: recomendación obligatoria, hallazgo opcional. Parcial y No cumple: hallazgo obligatorio.", "ref": "OCTAVO B num. 2"}, {"pat": "Sección del hallazgo", "q": "El Auditor detecta irregularidades que, con base en su juicio profesional, pudieran favorecer operaciones con recursos de procedencia ilícita. ¿En qué sección debe describirlas?", "o": ["A. Resultados de la revisión", "B. Cumplimiento regulatorio", "C. Asuntos clave de la auditoría", "Sólo en el escrito de remisión"], "a": 2, "x": "Es uno de los cuatro supuestos de información «preocupante» de la sección C (arts. 139 Quáter o 400 Bis del CPF). El hallazgo también irá a la D.", "ref": "OCTAVO C"}, {"pat": "5 años: ¿desde cuándo?", "q": "Los papeles de trabajo de la Persona Moral que soportan el informe deben conservarse y estar a disposición por un plazo mínimo de…", "o": ["5 años desde la elaboración del informe", "5 años desde la presentación del informe ante la Comisión", "10 años desde el cierre del ejercicio", "3 años desde la firma del contrato"], "a": 1, "x": "El plazo corre desde la presentación ante la Comisión, no desde la elaboración.", "ref": "QUINTO último párrafo"}, {"pat": "Quién conoce el informe", "q": "Según el DÉCIMO PRIMERO, ¿quiénes deben conocer el contenido del Informe de Auditoría?", "o": ["El Consejo de administración y el auditor externo", "La dirección general y el Comité o, en su caso, el Oficial de Cumplimiento", "Sólo el Oficial de Cumplimiento", "La UIF y la CNBV"], "a": 1, "x": "Para evaluar la eficacia operativa y dar seguimiento a los programas de acción correctiva. El escrito de remisión informa la fecha en que lo conocieron.", "ref": "DÉCIMO PRIMERO"}, {"pat": "SEXTO vs SÉPTIMO", "q": "Las pruebas a los sistemas automatizados y las revisiones aleatorias a los expedientes deben preverse en…", "o": ["La planeación, dentro del cuestionario inicial (SEXTO)", "El programa de trabajo (SÉPTIMO)", "La sección B del informe", "El escrito de remisión"], "a": 1, "x": "El programa de trabajo incluye calendario, temas, pruebas a sistemas, revisiones aleatorias de expedientes, recursos y seguimiento.", "ref": "SÉPTIMO"}]}};
+const CASES=[{"t": "ROI del 2T enviado 2 días tarde", "a": [1, 1], "nota": "Además, el Auditor señala ese reporte como presentado fuera del plazo.", "ref": "OCTAVO A fr. IV inc. b) y último párrafo"}, {"t": "Comité no integrado y sin excepción", "a": [1, 1], "nota": "", "ref": "OCTAVO A fr. V inc. a)"}, {"t": "OC dice que parametrizó alertas, sin evidencia", "a": [1, 0, 0], "nota": "No hay prueba de incumplimiento ni de cumplimiento: falta evidencia objetiva.", "ref": "OCTAVO A fr. III inc. d)"}, {"t": "Capacitación completa; sugiere sumar tipologías recientes", "a": [1, 0, 1, 1], "nota": "", "ref": "OCTAVO A fr. VI"}, {"t": "Listas completas y eficaces; nada que mejorar", "a": [1, 0, 1, 0], "nota": "", "ref": "OCTAVO A fr. X"}, {"t": "SOFOM sin autorización de Modelos Novedosos", "a": [0], "nota": "El Auditor verifica que la exclusión no actualice incumplimiento.", "ref": "OCTAVO A fr. XII"}];
+
+</script>
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+window.F4={$, $$, esc};
+/* proyección y recitar */
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const bp=$("#b-proj"), br=$("#b-rec");
+function setP(on){document.body.classList.toggle("proj",on);bp&&bp.setAttribute("aria-pressed",on);store("f4-proj",on?"1":"0")}
+function setR(on){document.body.classList.toggle("recitar",on);br&&br.setAttribute("aria-pressed",on);$$(".rec.shown").forEach(e=>e.classList.remove("shown"))}
+bp&&bp.addEventListener("click",()=>setP(!document.body.classList.contains("proj")));
+br&&br.addEventListener("click",()=>setR(!document.body.classList.contains("recitar")));
+const bpr=$("#b-print"); bpr&&bpr.addEventListener("click",()=>window.print());
+if(store("f4-proj")==="1")setP(true);
+document.addEventListener("click",e=>{const r=e.target.closest(".rec");if(r&&document.body.classList.contains("recitar"))r.classList.add("shown")});
+/* sorters: data-sorter = id en SORTERS */
+function initSorter(box){
+  const S=SORTERS[box.dataset.sorter]; let done=0, good=0;
+  const order=S.items.map((x,i)=>i); if(S.shuffle!==false){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}}
+  box.classList.add("sorter");
+  box.innerHTML=`<div class="top"><span class="eyebrow">${esc(S.prompt||"Clasifica")}</span><span class="score num" data-sc>0 de ${S.items.length}</span></div>`+
+   order.map(i=>{const it=S.items[i];return `<div class="it" data-i="${i}"><div>${it.t}</div><div class="opts">${S.cats.map(c=>`<button type="button" data-k="${c.k}">${esc(c.label)}</button>`).join("")}</div></div>`}).join("")+
+   `<div class="qbtns"><button class="btn ghost" type="button" data-reset>Reiniciar</button></div>`;
+  box.onclick=e=>{
+    if(e.target.closest("[data-reset]")){initSorter(box);return}
+    const b=e.target.closest("button[data-k]"); if(!b)return; const row=b.closest(".it"); if(row.classList.contains("done"))return;
+    const it=S.items[+row.dataset.i]; const right=[].concat(it.k); const ok=right.includes(b.dataset.k);
+    row.classList.add("done"); done++; if(ok)good++;
+    $$("button[data-k]",row).forEach(z=>{z.disabled=true; if(right.includes(z.dataset.k))z.classList.add("right"); else if(z===b)z.classList.add("wrong")});
+    row.insertAdjacentHTML("beforeend",`<div class="fb"><b class="${ok?"tick":"cross"}">${ok?"✓":"✗"}</b> ${it.x||""}${it.ref?` <span class="ref">${esc(it.ref)}</span>`:""}</div>`);
+    $("[data-sc]",box).textContent=`${good} de ${done} · ${S.items.length} en total`;
+  };
+}
+$$("[data-sorter]").forEach(initSorter);
+/* rondas: votación antes de revelar */
+$$("[data-ronda]").forEach(box=>{
+  const R=RONDAS[box.dataset.ronda]; let i=0, rev=new Array(R.items.length).fill(false), pick=new Array(R.items.length).fill(-1);
+  box.classList.add("ronda","card");
+  function draw(){
+    const q=R.items[i];
+    box.innerHTML=`<div class="head"><span class="eyebrow num">${esc(R.title)} · ${i+1} de ${R.items.length}</span><span class="dots">${R.items.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</span></div>
+     ${q.pat?`<span class="pat">Ataca: ${esc(q.pat)}</span>`:""}
+     <p class="qtext">${q.q}</p>
+     <div class="opts">${q.o.map((o,k)=>`<button type="button" class="op${pick[i]===k?" sel":""}${rev[i]&&k===q.a?" right":""}${rev[i]&&pick[i]===k&&k!==q.a?" wrong":""}" data-k="${k}"><b>${"ABCD"[k]}</b><span>${o}</span></button>`).join("")}</div>
+     <div data-fb>${rev[i]?`<div class="qfb"><b class="ok">Respuesta: ${"ABCD"[q.a]}.</b> ${q.x} <span class="ref">${esc(q.ref)}</span></div>`:`<p class="mini sub">Voten primero (mano alzada o chat: A, B, C o D). Luego revela.</p>`}</div>
+     <div class="qbtns"><button class="btn ghost" type="button" data-prev ${i===0?"disabled":""}>Anterior</button>${rev[i]?"":`<button class="btn" type="button" data-rev>Revelar</button>`}<button class="btn ghost" type="button" data-next ${i===R.items.length-1?"disabled":""}>Siguiente</button></div>`;
+  }
+  box.addEventListener("click",e=>{
+    const op=e.target.closest(".op"); if(op&&!rev[i]){pick[i]=+op.dataset.k;draw();return}
+    if(e.target.closest("[data-rev]")){rev[i]=true;draw();return}
+    if(e.target.closest("[data-next]")&&i<R.items.length-1){i++;draw();return}
+    if(e.target.closest("[data-prev]")&&i>0){i--;draw();return}
+  });
+  draw();
+});
+})();
+</script>
+<script>
+(function(){
+const {$,$$,esc}=F4;
+const Q=[
+ {q:"¿La obligación surte vigencia para este Sujeto Supervisado?",h:"Considera sus características estructurales, legales o institucionales."},
+ {q:"¿Encontraste que el cumplimiento no cubre los elementos necesarios, o un incumplimiento que actualiza una sanción?",h:"Ejemplos: un reporte omitido o extemporáneo, un elemento faltante."},
+ {q:"¿Cuentas con evidencia objetiva que demuestre el cumplimiento?",h:"Documentos, registros, pruebas del DÉCIMO."},
+ {q:"¿Requieres o recomiendas alguna mejora?",h:"Aunque sea una."}];
+const V={
+ na:{b:"No aplica",c:"c5",m:"El Auditor verifica que la exclusión no actualice algún incumplimiento y que sea consistente con su análisis de Riesgos.",r:"OCTAVO B num. 5"},
+ no:{b:"No cumple",c:"c4",m:"Incluye al menos un <b>hallazgo</b>, identificado en la obligación evaluada. Va a la sección D con su acción correctiva, plazo y responsables.",r:"OCTAVO B num. 4"},
+ pa:{b:"Cumple Parcialmente",c:"c3",m:"Incluye al menos un <b>hallazgo</b> y, en su caso, recomendaciones de mejora.",r:"OCTAVO B num. 3"},
+ ma:{b:"Cumple Mayoritariamente",c:"c2",m:"Incluye al menos una <b>recomendación de mejora</b> y, en su caso, algún hallazgo.",r:"OCTAVO B num. 2"},
+ cu:{b:"Cumple",c:"c1",m:"Sólo si se demuestra que no se requieren ni recomiendan mejoras.",r:"OCTAVO B num. 1"}};
+let ans=[],caseI=-1;
+const st=$("#cal-steps"),out=$("#cal-out"),cs=$("#cal-cases");
+cs.innerHTML=CASES.map((c,i)=>`<button type="button" data-c="${i}" aria-pressed="false">${esc(c.t)}</button>`).join("");
+function verdict(){
+ if(ans[0]===0)return"na"; if(ans[0]!==1)return null;
+ if(ans[1]===1)return"no"; if(ans[1]!==0)return null;
+ if(ans[2]===0)return"pa"; if(ans[2]!==1)return null;
+ if(ans[3]===1)return"ma"; if(ans[3]===0)return"cu"; return null;}
+function draw(){
+ const v=verdict(); let html="";
+ for(let k=0;k<Q.length;k++){
+  const prevDone = k===0 || (ans[k-1]!==undefined && !(k===1&&ans[0]===0) && !(k===2&&ans[1]===1) && !(k===3&&ans[2]===0));
+  const stop = (k>=1&&ans[0]===0)||(k>=2&&ans[1]===1)||(k>=3&&ans[2]===0);
+  if(!prevDone||stop) break;
+  html+=`<div class="qstep"><legend><b>${k+1}</b>${esc(Q[k].q)}</legend><p class="mini sub">${esc(Q[k].h)}</p><div class="yn"><button type="button" data-q="${k}" data-v="1" aria-pressed="${ans[k]===1}">Sí</button><button type="button" data-q="${k}" data-v="0" aria-pressed="${ans[k]===0}">No</button></div></div>`;}
+ html+=`<div class="qbtns"><button class="btn ghost" type="button" data-clear>Empezar de nuevo</button></div>`;
+ st.innerHTML=html;
+ if(!v){out.innerHTML=`<p class="eyebrow">Resultado</p><p class="sub">Contesta las preguntas o elige un caso.</p>`;return}
+ const c=caseI>=0?CASES[caseI]:null;
+ out.innerHTML=`<p class="eyebrow">Calificación en la sección B</p><span class="vbadge ${V[v].c}">${V[v].b}</span><p>${V[v].m}</p>${c&&c.nota?`<div class="note">${esc(c.nota)}</div>`:""}<span class="ref">${V[v].r}${c?` · ${esc(c.ref)}`:""}</span>`;}
+st.addEventListener("click",e=>{const b=e.target.closest("button[data-q]");if(b){const k=+b.dataset.q;ans=ans.slice(0,k);ans[k]=+b.dataset.v;caseI=-1;$$("button",cs).forEach(z=>z.setAttribute("aria-pressed","false"));draw();}
+ if(e.target.closest("[data-clear]")){ans=[];caseI=-1;$$("button",cs).forEach(z=>z.setAttribute("aria-pressed","false"));draw();}});
+cs.addEventListener("click",e=>{const b=e.target.closest("button[data-c]");if(!b)return;caseI=+b.dataset.c;ans=CASES[caseI].a.slice();$$("button",cs).forEach(z=>z.setAttribute("aria-pressed",z===b));draw();});
+draw();
+})();
+</script>
+</body>
+</html>

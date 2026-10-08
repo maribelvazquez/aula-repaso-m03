@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Quién lo dijo? · 3.2.1</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#faf5ec; --surface:#ffffff; --surface-2:#f3ede1; --line:#e4dccd;
+  --fg:#1b1b1e; --muted:#5b5f62; --carbon:#393e41;
+  --verde:#64c27b; --verde-claro:#87d895; --verde-tint:#e3f4e6;
+  --morado:#a663cc; --morado-tint:#f1e6f8;
+  --turquesa:#80bcb5; --amarillo:#faa916; --coral:#ff8361; --coral-tint:#ffe9e2;
+  --no:#b9b2a5; --on-color:#1b1b1e; --on-dark:#ffffff;
+  --f-display:"Montserrat", "Helvetica Neue", Arial, sans-serif;
+  --f-body:"Inter", system-ui, -apple-system, "Segoe UI", Arial, sans-serif;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#17181a; --surface:#212326; --surface-2:#2a2c30; --line:#393c41;
+  --fg:#f2eee6; --muted:#b4b0a8; --carbon:#d6d2ca;
+  --verde:#6fcb86; --verde-claro:#87d895; --verde-tint:#1f3a28;
+  --morado:#b884d6; --morado-tint:#33253d;
+  --turquesa:#8fc8c1; --amarillo:#f7b23b; --coral:#ff9373; --coral-tint:#3d2620;
+  --no:#5f5b55; --on-color:#1b1b1e; --on-dark:#ffffff; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:18px;padding-block:20px 64px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;line-height:1.15}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;letter-spacing:-.01em}
+h2{font-size:clamp(21px,3vw,27px);font-weight:800}
+h3{font-size:16px;font-weight:700}
+p{margin:0}
+.eyebrow{font-family:var(--f-display);font-size:12px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--muted)}
+.hl{background:var(--verde);color:var(--on-color);padding:0 .18em;border-radius:4px;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.lede{max-width:68ch;color:var(--carbon);font-size:16px}
+.membrete{height:3px;background:var(--verde-claro);border:0;margin:14px 0 0}
+header.top{display:grid;gap:12px;padding-block:8px 18px}
+nav.idx{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);display:flex;gap:6px;overflow-x:auto;padding-block:8px;margin-bottom:8px;scrollbar-width:thin}
+nav.idx a{flex:0 0 auto;font-size:13px;font-weight:600;color:var(--fg);text-decoration:none;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface)}
+nav.idx a:hover{border-color:var(--morado)}
+section{padding-block:30px 6px;display:grid;gap:14px;scroll-margin-top:60px}
+.sub{color:var(--muted);max-width:72ch}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px}
+.num{font-variant-numeric:tabular-nums}
+.ref{font-size:12px;color:var(--muted);font-weight:600}
+.mini{font-size:13px}
+/* Puertas */
+.doors{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.door{appearance:none;text-align:left;font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:6px;cursor:pointer;position:relative}
+.door:hover{border-color:var(--carbon)}
+.door[aria-pressed="true"]{outline:3px solid var(--morado);outline-offset:-1px}
+.door .n{font-family:var(--f-display);font-weight:800;font-size:40px;line-height:1}
+.door .t{font-family:var(--f-display);font-weight:700;font-size:15px}
+.door .d{font-size:13px;color:var(--muted)}
+.door .tag{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--surface-2)}
+.door.debe .tag{background:var(--amarillo);color:var(--on-color)}
+.ritmo{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px;font-family:var(--f-display);font-weight:800;font-size:22px}
+.ritmo span.lbl{font-family:var(--f-body);font-weight:500;font-size:14px;color:var(--muted)}
+.extra{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px}
+.extra .card{display:grid;gap:6px}
+.pill{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;justify-self:start}
+.pill.star{background:var(--amarillo);color:var(--on-color)}
+.pill.warn{background:var(--coral);color:var(--on-color)}
+/* Matriz */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:760px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle}
+thead th{font-family:var(--f-display);font-size:12.5px;font-weight:700;background:var(--surface-2);position:sticky;top:0}
+thead th button{all:unset;cursor:pointer;display:grid;gap:2px}
+thead th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+thead th small{font-family:var(--f-body);font-weight:500;color:var(--muted);font-size:11px}
+th.col-x{background:var(--coral-tint)}
+tbody th{font-weight:600;font-size:14px;white-space:nowrap;border-left:6px solid var(--fam,var(--line))}
+tbody th button{all:unset;cursor:pointer}
+tbody th button:focus-visible{outline:2px solid var(--morado);outline-offset:3px}
+td.cell{text-align:center;padding:5px}
+.c{all:unset;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:74px;min-height:30px;padding:3px 8px;border-radius:7px;font-size:12px;font-weight:700;font-variant-numeric:tabular-nums}
+.c:focus-visible{outline:2px solid var(--morado);outline-offset:2px}
+.c.si{background:var(--verde);color:var(--on-color)}
+.c.debe{background:var(--amarillo);color:var(--on-color)}
+.c.medio{border:2px dashed var(--carbon);color:var(--fg)}
+.c.no{color:var(--no);font-weight:600}
+tr.fam-sep th, tr.fam-sep td{border-top:2px solid var(--line)}
+table.dim tbody td.cell:not(.on) .c{opacity:.28}
+table.dim thead th.on{background:var(--morado);color:var(--on-dark)}
+table.dim thead th.on small{color:var(--on-dark)}
+tbody tr.rowon th{background:var(--morado-tint)}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted);align-items:center}
+.legend .c{min-width:auto;cursor:default}
+.detail{border-left:6px solid var(--morado)}
+.detail h3{margin-bottom:4px}
+.detail ul{margin:8px 0 0;padding-left:18px;display:grid;gap:4px}
+/* Asistente */
+.wiz{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+@media (max-width:820px){.wiz{grid-template-columns:1fr}}
+fieldset{border:0;margin:0;padding:0;display:grid;gap:8px}
+legend{font-family:var(--f-display);font-weight:700;font-size:14px;margin-bottom:6px}
+legend b{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--carbon);color:var(--bg);font-size:12px;margin-right:6px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{cursor:pointer;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);display:inline-flex;align-items:center;gap:6px}
+.chips label i{width:9px;height:9px;border-radius:50%;background:var(--fam,var(--line))}
+.chips input:checked + label{background:var(--morado);border-color:var(--morado);color:var(--on-dark)}
+.chips input:focus-visible + label{outline:2px solid var(--morado);outline-offset:2px}
+.verdict{display:grid;gap:10px;align-content:start}
+.vbadge{justify-self:start;font-family:var(--f-display);font-weight:800;font-size:22px;padding:4px 14px;border-radius:8px}
+.vbadge.si{background:var(--verde);color:var(--on-color)}
+.vbadge.debe{background:var(--amarillo);color:var(--on-color)}
+.vbadge.no{background:var(--carbon);color:var(--bg)}
+.vbadge.medio{border:2px dashed var(--carbon)}
+.req{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.req li{display:grid;grid-template-columns:22px 1fr;gap:6px;font-size:14px}
+.req li::before{content:"✓";font-weight:800;color:var(--verde)}
+.note{font-size:13.5px;background:var(--surface-2);border-radius:8px;padding:10px 12px}
+.note.warn{background:var(--coral-tint)}
+/* Requisitos */
+table.req-t{min-width:980px;font-size:13px}
+table.req-t td{vertical-align:top}
+table.req-t tbody th{border-left:0;white-space:normal;min-width:150px;font-size:13px}
+.yes{font-weight:700}
+.y::before{content:"Sí · ";font-weight:800;color:var(--verde)}
+.n0{color:var(--muted)}
+.colfilter{display:flex;flex-wrap:wrap;gap:6px}
+.colfilter button{font:inherit;font-size:13px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.colfilter button[aria-pressed="true"]{background:var(--carbon);color:var(--bg);border-color:var(--carbon)}
+/* Transferencias */
+.tl{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;counter-reset:t}
+.tl .card{display:grid;gap:6px;border-top:5px solid var(--amarillo)}
+.tl .k{font-family:var(--f-display);font-weight:800;font-size:18px}
+/* Trampas */
+.traps{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.trap{display:grid;gap:6px;border:2px dashed var(--carbon);background:var(--surface)}
+.trap h3{font-size:15px}
+/* Práctica */
+.quiz{display:grid;gap:12px}
+.qbox{display:grid;gap:12px}
+.qtext{font-size:17px;font-weight:600;max-width:70ch}
+.qbtns{display:flex;gap:8px;flex-wrap:wrap}
+.btn{font:inherit;font-weight:700;padding:9px 18px;border-radius:8px;border:0;cursor:pointer;background:var(--morado);color:var(--on-dark)}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--line)}
+.btn:focus-visible{outline:2px solid var(--fg);outline-offset:2px}
+.qfb{font-size:14.5px;border-radius:8px;padding:10px 12px;background:var(--surface-2)}
+.qfb b.ok{color:var(--verde)} .qfb b.bad{color:var(--coral)}
+.score{font-family:var(--f-display);font-weight:800}
+footer{margin-top:40px;font-size:12.5px;color:var(--muted);display:grid;gap:6px;max-width:80ch}
+@media (prefers-reduced-motion:no-preference){ .c,.door,.chips label{transition:background .15s, opacity .15s, border-color .15s} }
+
+
+/* ---- Frente 4: piezas nuevas ---- */
+.topbar{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;padding:9px 16px;background:#1b1b1e;color:#fff;font:600 13px/1.3 Inter,Arial,sans-serif}
+.topbar a{color:#fff}
+.topbar .sp{flex:1}
+.topbar button{font:inherit;font-size:12px;color:#fff;background:transparent;border:1px solid #6b6f72;border-radius:999px;padding:4px 10px;cursor:pointer}
+.topbar button[aria-pressed="true"]{background:var(--verde);color:#1b1b1e;border-color:var(--verde)}
+body.proj{font-size:18px}
+body.proj .wrap{max-width:1280px}
+body.proj .qtext{font-size:24px}
+body.proj .sorter .it{font-size:17px}
+body.proj table{font-size:16px}
+.rec{transition:filter .15s}
+body.recitar .rec:not(.shown){filter:blur(6px);cursor:pointer;user-select:none}
+.hint-rec{display:none}
+body.recitar .hint-rec{display:block}
+/* ganchos */
+.hooks{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.hook{background:var(--surface);border:1px solid var(--line);border-top:5px solid var(--verde);border-radius:var(--r);padding:12px 14px;display:grid;gap:4px;align-content:start}
+.hook .n{font-family:var(--f-display);font-weight:800;font-size:38px;line-height:1}
+.hook .t{font-family:var(--f-display);font-weight:700;font-size:14px}
+.hook .d{font-size:12.5px;color:var(--muted)}
+.hook.warn{border-top-color:var(--coral)}
+.col .hooks{grid-template-columns:repeat(auto-fit,minmax(125px,1fr))}
+.col .hook .n{font-size:30px}
+.hook.star{border-top-color:var(--amarillo)}
+/* tablas de contenido */
+table.t2{min-width:720px;font-size:14px}
+table.t2 td,table.t2 th{vertical-align:top}
+table.t2 tbody th{border-left:0;white-space:normal;min-width:170px;font-size:14px}
+td.dif{background:var(--coral-tint)}
+td.ok{background:var(--verde-tint)}
+td.na{color:var(--no)}
+.tick{font-weight:800;color:var(--verde)}
+.cross{font-weight:800;color:var(--coral)}
+.k{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:1px 7px;border-radius:999px;background:var(--surface-2);margin-right:4px}
+.k.g{background:var(--verde);color:var(--on-color)} .k.m{background:var(--morado);color:var(--on-dark)} .k.a{background:var(--amarillo);color:var(--on-color)} .k.c{background:var(--coral);color:var(--on-color)} .k.t{background:var(--turquesa);color:var(--on-color)}
+.lit{font-style:italic}
+.lit::before{content:"«"} .lit::after{content:"»"}
+.regla{display:grid;gap:4px;border-left:6px solid var(--verde);background:var(--surface);border-radius:8px;padding:10px 14px}
+.regla b{font-family:var(--f-display)}
+.crit{font-size:12px;color:var(--muted);font-style:italic}
+/* sorter */
+.sorter{display:grid;gap:8px}
+.sorter .top{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.sorter .it{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:14.5px}
+@media (max-width:700px){.sorter .it{grid-template-columns:1fr}}
+.sorter .opts{display:flex;flex-wrap:wrap;gap:6px}
+.sorter .opts button{font:inherit;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2);color:var(--fg);cursor:pointer}
+.sorter .opts button:disabled{cursor:default;opacity:.55}
+.sorter .opts button.right{background:var(--verde);color:var(--on-color);opacity:1;border-color:var(--verde)}
+.sorter .opts button.wrong{background:var(--coral);color:var(--on-color);opacity:1;border-color:var(--coral)}
+.sorter .fb{grid-column:1/-1;font-size:13.5px;color:var(--carbon)}
+.sorter .fb .ref{margin-left:6px}
+.sorter .it.done{border-color:var(--carbon)}
+/* ronda */
+.ronda{display:grid;gap:12px}
+.ronda .head{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+.ronda .opts{display:grid;gap:8px}
+.ronda .op{all:unset;cursor:pointer;display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:15px}
+.ronda .op b{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--surface-2);font-family:var(--f-display)}
+.ronda .op.sel{outline:3px solid var(--morado);outline-offset:-2px}
+.ronda .op.right{background:var(--verde-tint);border-color:var(--verde)}
+.ronda .op.right b{background:var(--verde);color:var(--on-color)}
+.ronda .op.wrong{background:var(--coral-tint);border-color:var(--coral)}
+.ronda .op:focus-visible{outline:2px solid var(--morado)}
+.ronda .pat{font-size:12px;font-weight:700;color:var(--muted)}
+.dots{display:flex;gap:4px;flex-wrap:wrap}
+.dots i{width:10px;height:10px;border-radius:50%;background:var(--line)}
+.dots i.on{background:var(--carbon)}
+/* línea de tiempo */
+.tline{display:grid;gap:0;counter-reset:st}
+.tline .st{display:grid;grid-template-columns:44px 1fr;gap:12px;position:relative;padding-bottom:14px}
+.tline .st::before{counter-increment:st;content:counter(st);display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--verde);color:var(--on-color);font-family:var(--f-display);font-weight:800;z-index:1}
+.tline .st::after{content:"";position:absolute;left:16px;top:34px;bottom:0;width:2px;background:var(--line)}
+.tline .st:last-child::after{display:none}
+.tline .st .card{display:grid;gap:4px;padding:10px 14px}
+.tline .st.alert::before{background:var(--coral)}
+/* asistente */
+.steps{display:grid;gap:12px}
+.qstep{display:grid;gap:8px}
+.qstep[hidden]{display:none}
+.yn{display:flex;gap:8px;flex-wrap:wrap}
+.yn button{font:inherit;font-weight:700;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.yn button[aria-pressed="true"]{background:var(--morado);color:var(--on-dark);border-color:var(--morado)}
+.cases{display:flex;flex-wrap:wrap;gap:6px}
+.cases button{font:inherit;font-size:12.5px;font-weight:600;padding:6px 11px;border-radius:999px;border:1px dashed var(--carbon);background:var(--surface);color:var(--fg);cursor:pointer;text-align:left}
+.cases button[aria-pressed="true"]{background:var(--carbon);color:var(--bg)}
+.vbadge.c1{background:var(--verde);color:var(--on-color)}
+.vbadge.c2{background:var(--verde-claro);color:var(--on-color)}
+.vbadge.c3{background:var(--amarillo);color:var(--on-color)}
+.vbadge.c4{background:var(--coral);color:var(--on-color)}
+.vbadge.c5{background:var(--surface-2);border:2px dashed var(--carbon)}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px}
+.col h3{margin-bottom:6px}
+.col ol,.col ul{margin:0;padding-left:20px;display:grid;gap:5px}
+.col.gafi{border-top:5px solid var(--morado)} .col.bas{border-top:5px solid var(--turquesa)} .col.dcg{border-top:5px solid var(--amarillo)}
+@media (max-width:700px){table.t2{min-width:600px;font-size:13px} table.t2 tbody th{min-width:110px} .hook .n{font-size:30px}}
+@media print{.topbar,nav.idx,.btn,.yn,.cases,.sorter .opts{display:none!important} body{background:#fff} .card{break-inside:avoid}}
+
+</style>
+</head>
+<body>
+<nav class="topbar" aria-label="Repaso"><b style="font-family:Montserrat,Arial,sans-serif;letter-spacing:.04em">Módulo 3 · Repaso</b><a href="../index.html">← Todos los temas</a><span class="sp"></span><button type="button" id="b-proj" aria-pressed="false">Modo proyección</button><button type="button" id="b-rec" aria-pressed="false">Modo recitar</button><button type="button" id="b-print">Imprimir</button></nav>
+<div class="wrap">
+<header class="top">
+  <div class="eyebrow">360Educa · Módulo 3 · Repaso de resultados · Certificación CNBV PLD/FT · Temario agosto 2026</div>
+  <h1>3.2.1 · <span class="hl">¿Quién lo dijo?</span></h1>
+  <p class="lede">GAFI, Basilea y las DCG dicen cosas parecidas con palabras distintas, y el examen lo aprovecha. Aquí se ponen lado a lado: listas de seis, ajustes del supervisor, factores del cliente, líneas de defensa y frases literales.</p>
+  <p class="mini sub hint-rec">Modo recitar: las celdas difuminadas se descubren con un toque. Dilas en voz alta antes de tocar.</p>
+  <hr class="membrete">
+</header>
+<nav class="idx" aria-label="Secciones"><a href="#numeros">En números</a><a href="#matriz">Tres fuentes</a><a href="#seis">Retos vs elementos</a><a href="#ajustes">4 ajustes</a><a href="#frases">¿De quién es?</a><a href="#lineas">3 líneas</a><a href="#trampas">Trampas</a><a href="#practica">Ronda 3.2.1</a></nav>
+
+<section id="numeros">
+  <h2>Dos documentos, dos listas de seis</h2>
+  <p class="sub">El examen real «fue mucho GAFI» y mezcla sus listas con las de Basilea y las DCG. Primero, los números de cada uno.</p>
+  <div class="two">
+    <div class="card col gafi"><span class="eyebrow">GAFI · Guía EBR para el sector bancario (2014)</span>
+      <div class="hooks" style="margin-top:8px">
+        <div class="hook"><span class="n rec">3</span><span class="t">Secciones</span><span class="d">I EBR · II supervisores · III bancos.</span></div>
+        <div class="hook star"><span class="n rec">6</span><span class="t">Retos</span><span class="d">Sección I, apartado D.</span><span class="ref">párr. 17 a 29</span></div>
+        <div class="hook star"><span class="n rec">4</span><span class="t">Ajustes del supervisor</span><span class="d">Sección II.</span><span class="ref">párr. 39</span></div>
+        <div class="hook"><span class="n rec">1 · 26</span><span class="t">Recomendaciones base</span><span class="d">EBR · supervisión.</span><span class="ref">párr. 16</span></div>
+      </div></div>
+    <div class="card col bas"><span class="eyebrow">Comité de Basilea · Adecuada gestión de los riesgos BC/FT (2014)</span>
+      <div class="hooks" style="margin-top:8px">
+        <div class="hook"><span class="n rec">3</span><span class="t">Capítulos</span><span class="d">I Introducción · II Elementos esenciales · III Grupo y transfronterizo.</span></div>
+        <div class="hook star"><span class="n rec">6</span><span class="t">Elementos esenciales</span><span class="d">Sección II.</span><span class="ref">Índice · párr. 14</span></div>
+        <div class="hook star"><span class="n rec">3</span><span class="t">Líneas de defensa</span><span class="d">Negocio · cumplimiento · auditoría interna.</span><span class="ref">párr. 19 y 26</span></div>
+        <div class="hook warn"><span class="n rec">5</span><span class="t">Años de registros</span><span class="d">Desde el cese de la relación. DCG: 10.</span><span class="ref">párr. 52</span></div>
+      </div></div>
+  </div>
+</section>
+
+<section id="matriz">
+  <h2>¿Quién dice qué? Tres fuentes lado a lado</h2>
+  <p class="sub">Lee por renglón. Las celdas en coral son las que el grupo cruzó en los simuladores.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th>Concepto</th><th>GAFI · Guía EBR bancos</th><th>Basilea · BCBS 275</th><th>DCG (Bancos · SOFOM)</th></tr></thead>
+   <tbody>
+    <tr><th>Quién la emite</th><td class="rec">GAFI, organismo intergubernamental.</td><td class="rec">Comité de Supervisión Bancaria de Basilea.</td><td class="rec">SHCP, con base en el art. 115 LIC (y equivalentes).</td></tr>
+    <tr><th>¿Obliga?</th><td class="dif rec"><span class="lit">no tiene efecto jurídico vinculante</span> (párr. 8)</td><td class="rec">Directrices; complementan las normas GAFI y <span class="lit">en ningún caso deberán interpretarse como modificaciones</span> (párr. 3)</td><td class="rec">Sí: disposiciones de carácter general.</td></tr>
+    <tr><th>A quién se dirige</th><td class="rec">Países, autoridades competentes (incluidos supervisores bancarios) y profesionales del sector bancario (párr. 5).</td><td class="rec">Bancos: cómo incluir BC y FT en su gestión global del riesgo (párr. 1).</td><td class="rec">Entidades del sector.</td></tr>
+    <tr><th>Objetivo en una frase</th><td class="rec">Propósito: preparar principios, colaborar, contribuir a la supervisión y, <span class="lit">sobre todo, fomentar el desarrollo de un entendimiento común</span> del EBR (párr. 4).</td><td class="dif rec">La gestión del riesgo BC/FT protege la <b>seguridad y solvencia</b> de los bancos, <span class="lit">el principal objetivo de la supervisión bancaria</span> (párr. 2 y 5).</td><td class="rec">Medidas y procedimientos mínimos para prevenir y detectar operaciones de los arts. 139 Quáter y 400 Bis CPF (Bancos 1ª).</td></tr>
+    <tr><th>Su lista de seis</th><td class="dif rec"><b>Retos</b> de poner en práctica el EBR.</td><td class="dif rec"><b>Elementos esenciales</b> de una sólida gestión del riesgo.</td><td class="na">—</td></tr>
+    <tr><th>Al supervisor</th><td class="rec"><b>4 ajustes</b> del enfoque de supervisión (párr. 39); la NI de la <b>R.26</b> exige que los supervisores adopten un EBR (párr. 16).</td><td class="na">—</td><td class="rec">Lo regula otra norma: el Reglamento de Supervisión (3.1.2).</td></tr>
+    <tr><th>Quién aprueba</th><td class="rec">La evaluación de riesgos del banco: <b>la alta dirección</b> (párr. 58).</td><td class="rec">Políticas: el Consejo (párr. 17). Relaciones con clientes de alto riesgo: <b>la alta dirección</b> (párr. 34).</td><td class="rec">Clientes de alto riesgo: <b>un directivo</b> con facultades (Bancos 27ª). Modelo de grado de riesgo: comité de riesgos, a propuesta del Comité (Bancos 25ª Bis).</td></tr>
+    <tr><th>Factores para el riesgo del cliente</th><td class="na">—</td><td class="dif rec">Antecedentes · <b>ocupación</b> · <b>fuentes de renta y riqueza</b> · país de origen y de residencia · productos utilizados · naturaleza y finalidad de las cuentas · cuentas vinculadas · actividades comerciales (párr. 32).</td><td class="dif rec">Antecedentes · <b>profesión</b>, actividad o giro · <b>origen y destino de los recursos</b> · lugar de residencia · Geolocalización · metodología del Cap. II Bis (SOFOM 21ª).</td></tr>
+    <tr><th>Líneas de defensa</th><td class="na">No las enumera.</td><td class="dif rec">1ª unidades de negocio · 2ª responsable ejecutivo de PBC/FT y cumplimiento (también RR. HH. o tecnología) · 3ª auditoría interna (párr. 19 y 26).</td><td class="na">No usa el término.</td></tr>
+    <tr><th>Conservación de registros</th><td class="na">Esta guía no fija plazo (la R.11 del GAFI: al menos 5 años).</td><td class="dif rec">Al menos <b>5 años desde el cese</b> de la relación o transacción ocasional (párr. 52).</td><td class="dif rec">No menor a <b>10 años</b> (Bancos 59ª).</td></tr>
+    <tr><th>PEP extranjeras</th><td class="na">—</td><td class="rec">Diligencia debida reforzada <b>obligatoria</b> (párr. 34).</td><td class="rec">Al menos, clientes de grado de riesgo alto (Bancos 28ª).</td></tr>
+   </tbody></table></div>
+  <div class="regla"><b>Regla para el examen</b><span>«<b>Fuentes de renta y riqueza</b>» u «<b>ocupación</b>» → Basilea. «<b>Origen y destino de los recursos</b>», «profesión» o «Geolocalización» → DCG. «<b>Seguridad y solvencia</b>» → Basilea. «<b>No vinculante</b>» y «<b>entendimiento común</b>» → GAFI.</span><span class="crit">Palabras ancla: criterio didáctico 360Educa sobre el texto de cada fuente.</span></div>
+</section>
+
+<section id="seis">
+  <h2>Seis retos contra seis elementos</h2>
+  <p class="sub">El cruce más caro del simulador: 54 % falló los nombres exactos de los elementos esenciales. Las dos listas comparten palabras; aprende dónde se separan.</p>
+  <div class="two">
+    <div class="card col gafi"><h3>GAFI · 6 retos del EBR</h3><ol>
+      <li class="rec">Asignación de responsabilidades en un EBR</li>
+      <li class="rec">Identificación del riesgo de LA/FT</li>
+      <li class="rec">Evaluación del riesgo de LA/FT</li>
+      <li class="rec">Mitigación del riesgo de LA/FT</li>
+      <li class="rec">Desarrollo de un entendimiento común de EBR</li>
+      <li class="rec">Inclusión financiera</li></ol>
+      <span class="ref">Sección I, apartado D · párr. 17 a 29</span></div>
+    <div class="card col bas"><h3>Basilea · 6 elementos esenciales</h3><ol>
+      <li class="rec">Evaluación, comprensión, gestión y mitigación de riesgos <small>(evaluación · gobierno · 3 líneas · seguimiento de transacciones)</small></li>
+      <li class="rec">Política de aceptación de clientes</li>
+      <li class="rec">Identificación, verificación y elaboración del perfil de riesgo de clientes y beneficiarios efectivos</li>
+      <li class="rec">Seguimiento continuo</li>
+      <li class="rec">Gestión de la información</li>
+      <li class="rec">Notificación de transacciones sospechosas y bloqueo de activos</li></ol>
+      <span class="ref">Sección II · índice</span></div>
+  </div>
+  <div class="regla"><b>Cómo separarlas</b><span>GAFI habla del <b>riesgo</b> (identificar, evaluar, mitigar) y de <b>dificultades</b> (responsabilidades, entendimiento común, inclusión). Basilea habla del <b>cliente y la información</b> (aceptación, perfil, seguimiento, información, notificación). «Mitigación» sola es reto GAFI; «evaluación, comprensión, gestión y mitigación» junta es elemento de Basilea.</span><span class="crit">Criterio didáctico 360Educa.</span></div>
+  <div id="s-seis" data-sorter="seis"></div>
+</section>
+
+<section id="ajustes">
+  <h2>Los 4 ajustes del supervisor · GAFI párr. 39</h2>
+  <p class="sub">36 % confundió «intensidad de la supervisión» con «intensidad de los controles de autorización». Busca la <b>palabra ancla</b> del enunciado.</p>
+  <div class="tablewrap"><table class="t2">
+   <thead><tr><th>Ajuste</th><th>Qué hace el supervisor</th><th>Palabra ancla</th></tr></thead>
+   <tbody>
+    <tr><th>a) Intensidad de los controles para su función de <u>autorización</u></th><td class="rec">Regula cuánta información pide para evitar que delincuentes o cómplices tengan una parte significativa o mayoritaria de un banco. Riesgo bajo: examen de documentación; alto: información adicional.</td><td class="rec"><b>autorización · accionistas · aprobación</b></td></tr>
+    <tr><th>b) Tipo de supervisión</th><td class="rec">Combina supervisión <b>in situ y extra situ</b>; la extra situ sola puede no ser apropiada en mayor riesgo.</td><td class="rec"><b>in situ · extra situ</b></td></tr>
+    <tr><th>c) Frecuencia y naturaleza de la supervisión continua</th><td class="rec">Ajusta <b>cada cuánto</b> supervisa y combina exámenes periódicos con revisiones con fines específicos (denuncias, información de autoridades, muestras temáticas).</td><td class="rec"><b>frecuencia · periódicos · denuncia · temáticas</b></td></tr>
+    <tr><th>d) Intensidad de la supervisión</th><td class="rec">Determina el <b>alcance o nivel de evaluación</b>: pruebas a fondo de sistemas y archivos, entrevistas con personal, alta dirección y consejo.</td><td class="rec"><b>alcance · nivel de evaluación · pruebas a fondo</b></td></tr>
+   </tbody></table></div>
+  <div id="s-aj" data-sorter="aj"></div>
+</section>
+
+<section id="frases">
+  <h2>¿De quién es esta frase?</h2>
+  <p class="sub">Frases literales de cada fuente. Así llegan en el examen: sin decir de dónde vienen.</p>
+  <div id="s-fr" data-sorter="fr"></div>
+</section>
+
+<section id="lineas">
+  <h2>Las tres líneas de defensa · Basilea</h2>
+  <div class="tl">
+    <div class="card"><span class="k">1ª línea</span><span class="t" style="font-family:var(--f-display);font-weight:800">Unidades de negocio</span><p class="mini rec">Las de cara al público y en contacto con los clientes: identifican, evalúan y controlan los riesgos de sus actividades.</p><span class="ref">párr. 19 y 20</span></div>
+    <div class="card"><span class="k">2ª línea</span><span class="t" style="font-family:var(--f-display);font-weight:800">Responsable ejecutivo de PBC/FT y cumplimiento</span><p class="mini rec">También recursos humanos o tecnología. Seguimiento continuo del cumplimiento; notifica transacciones sospechosas. No asume competencias de negocio ni de auditoría interna.</p><span class="ref">párr. 19, 22 a 25</span></div>
+    <div class="card"><span class="k">3ª línea</span><span class="t" style="font-family:var(--f-display);font-weight:800">Auditoría interna</span><p class="mini rec">Evalúa de forma independiente la gestión y los controles; rinde cuentas al comité de auditoría del Consejo o a un órgano de vigilancia similar.</p><span class="ref">párr. 26</span></div>
+  </div>
+  <p class="mini sub">Los auditores externos también desempeñan una función importante, pero Basilea no los numera como línea de defensa (párr. 27).</p>
+</section>
+
+<section id="trampas">
+  <h2>Trampas</h2>
+  <div class="traps">
+    <div class="card trap"><h3>«Costo económico» como reto</h3><p class="mini">No está entre los 6 retos. Tampoco «desarrollo de grupos de trabajo».</p><span class="ref">GAFI párr. 17 a 29</span></div>
+    <div class="card trap"><h3>«Seguimiento continuo» como reto GAFI</h3><p class="mini">Es elemento esencial de Basilea (4).</p><span class="ref">Basilea Sección II</span></div>
+    <div class="card trap"><h3>Basilea: «origen y destino de los recursos»</h3><p class="mini">Esa es la redacción de las DCG. Basilea dice «fuentes de renta y riqueza».</p><span class="ref">Basilea párr. 32 · SOFOM 21ª</span></div>
+    <div class="card trap"><h3>Objetivo de Basilea: «conocer el riesgo inherente y residual»</h3><p class="mini">La respuesta es proteger la seguridad y solvencia: el principal objetivo de la supervisión bancaria.</p><span class="ref">Basilea párr. 2 y 5</span></div>
+    <div class="card trap"><h3>«La Guía GAFI es obligatoria»</h3><p class="mini">No tiene efecto jurídico vinculante. Lo obligatorio es aplicar el EBR: <span class="lit">no es entonces opcional, sino un pre-requisito</span>.</p><span class="ref">GAFI párr. 8 y 15</span></div>
+    <div class="card trap"><h3>«Basilea: 10 años de registros»</h3><p class="mini">Basilea: al menos 5 años desde el cese. Las DCG: 10 años.</p><span class="ref">Basilea párr. 52 · Bancos 59ª</span></div>
+  </div>
+</section>
+
+<section id="practica"><h2>Ronda 3.2.1 · voten antes de revelar</h2><p class="sub">Diez reactivos nuevos sobre los patrones del grupo.</p><div data-ronda="r321"></div></section>
+
+<footer><span>Fuentes: GAFI, Guía para un enfoque basado en riesgo · Sector bancario (2014, versión en español de la biblioteca del Aula); Comité de Supervisión Bancaria de Basilea, Adecuada gestión de los riesgos relacionados con el blanqueo de capitales y la financiación del terrorismo (BCBS 275, 2014); DCG Bancos (compilada al 28-ago-2024) y DCG SOFOM (compilado 2021). Citas por párrafo o disposición.</span><span>Palabras ancla y reglas de examen: criterio didáctico 360Educa. Material didáctico; no sustituye la publicación oficial.</span></footer>
+</div>
+<script>
+const SORTERS={"seis": {"prompt": "¿Reto GAFI, elemento de Basilea o ninguno?", "cats": [{"k": "g", "label": "Reto GAFI"}, {"k": "b", "label": "Elemento Basilea"}, {"k": "n", "label": "Ninguno"}], "items": [{"t": "Asignación de responsabilidades en un EBR", "k": "g", "ref": "GAFI párr. 18"}, {"t": "Identificación del riesgo de LA/FT", "k": "g", "ref": "GAFI párr. 21"}, {"t": "Mitigación del riesgo de LA/FT", "k": "g", "x": "Sola, es reto GAFI.", "ref": "GAFI párr. 24"}, {"t": "Desarrollo de un entendimiento común de EBR", "k": "g", "ref": "GAFI párr. 25"}, {"t": "Inclusión financiera", "k": "g", "x": "Basilea la menciona en el párr. 33, pero no es elemento esencial.", "ref": "GAFI párr. 28"}, {"t": "Evaluación, comprensión, gestión y mitigación de riesgos", "k": "b", "ref": "Basilea Sección II.1"}, {"t": "Política de aceptación de clientes", "k": "b", "ref": "Basilea Sección II.2"}, {"t": "Identificación, verificación y elaboración del perfil de riesgo de clientes y beneficiarios efectivos", "k": "b", "ref": "Basilea Sección II.3"}, {"t": "Seguimiento continuo", "k": "b", "ref": "Basilea Sección II.4"}, {"t": "Gestión de la información", "k": "b", "ref": "Basilea Sección II.5"}, {"t": "Notificación de transacciones sospechosas y bloqueo de activos", "k": "b", "ref": "Basilea Sección II.6"}, {"t": "Costo económico de implementar un EBR", "k": "n", "x": "Distractor del simulador.", "ref": "GAFI párr. 17 a 29"}, {"t": "Desarrollo de grupos de trabajo", "k": "n", "x": "Distractor del simulador.", "ref": "GAFI párr. 17 a 29"}, {"t": "Ajuste de la intensidad de la supervisión", "k": "n", "x": "Es uno de los 4 ajustes del supervisor (GAFI), no un reto ni un elemento.", "ref": "GAFI párr. 39 inc. d)"}, {"t": "Control interno y gobierno corporativo", "k": "n", "x": "GAFI titula así un apartado de su Sección III; en Basilea los «mecanismos de gobierno» son un inciso del elemento 1.", "ref": "GAFI Sección III C · Basilea párr. 17"}]}, "aj": {"prompt": "¿Qué ajuste del supervisor es?", "cats": [{"k": "a", "label": "a) Autorización"}, {"k": "b", "label": "b) Tipo"}, {"k": "c", "label": "c) Frecuencia"}, {"k": "d", "label": "d) Intensidad"}], "items": [{"t": "Determina el alcance o nivel de evaluación apropiado en función de los riesgos", "k": "d", "x": "Es el enunciado del reactivo del Simulador 2.", "ref": "GAFI párr. 39 inc. d)"}, {"t": "Decide la combinación correcta de supervisión in situ y extra situ", "k": "b", "ref": "GAFI párr. 39 inc. b)"}, {"t": "Combina exámenes periódicos con revisiones por una denuncia de irregularidades", "k": "c", "ref": "GAFI párr. 39 inc. c)"}, {"t": "Pide información adicional antes de aprobar a quien tendrá parte mayoritaria de un banco en un sector de alto riesgo", "k": "a", "ref": "GAFI párr. 39 inc. a)"}, {"t": "Realiza pruebas a fondo de sistemas y archivos y entrevistas con el consejo", "k": "d", "ref": "GAFI párr. 39 inc. d)"}, {"t": "Incluye a un banco en una muestra de revisión temática", "k": "c", "ref": "GAFI párr. 39 inc. c)"}, {"t": "Basa su decisión de aprobación en un examen de documentación porque el riesgo del sector es bajo", "k": "a", "ref": "GAFI párr. 39 inc. a)"}]}, "fr": {"prompt": "¿GAFI, Basilea o DCG?", "cats": [{"k": "g", "label": "GAFI"}, {"k": "b", "label": "Basilea"}, {"k": "d", "label": "DCG"}], "items": [{"t": "«La aplicación de EBR no es entonces opcional, sino un pre-requisito para lograr la aplicación efectiva de los Estándares»", "k": "g", "ref": "GAFI párr. 15"}, {"t": "«Este documento guía no tiene efecto jurídico vinculante»", "k": "g", "ref": "GAFI párr. 8"}, {"t": "«Sobre todo, fomentar el desarrollo de un entendimiento común en cuanto a lo que es el enfoque basado en riesgo»", "k": "g", "ref": "GAFI párr. 4"}, {"t": "«La evaluación de riesgos debe ser aprobada por la alta dirección»", "k": "g", "ref": "GAFI párr. 58"}, {"t": "«Estar excluidos del sistema financiero no equivale automáticamente a menores riesgos»", "k": "g", "ref": "GAFI párr. 28"}, {"t": "«La evaluación de riesgos de un banco no tiene por qué ser compleja, pero debe ser proporcional»", "k": "g", "ref": "GAFI párr. 55"}, {"t": "«…la seguridad y solvencia generales de los bancos y del sistema bancario, el principal objetivo de la supervisión bancaria»", "k": "b", "ref": "Basilea párr. 5"}, {"t": "«La auditoría interna, la tercera línea de defensa…»", "k": "b", "ref": "Basilea párr. 26"}, {"t": "«…al menos de cinco años desde el cese de la relación bancaria o transacción ocasional»", "k": "b", "ref": "Basilea párr. 52"}, {"t": "«…esa diligencia debida reforzada es obligatoria en el caso de PEP extranjeras»", "k": "b", "ref": "Basilea párr. 34"}, {"t": "«…su ocupación…, sus fuentes de renta y riqueza, su país de origen y de residencia…»", "k": "b", "ref": "Basilea párr. 32"}, {"t": "«…el origen y destino de sus recursos, el lugar de su residencia, Geolocalización…»", "k": "d", "ref": "SOFOM 21ª"}, {"t": "«…llevar a cabo la evaluación del Grado de Riesgo al menos cada seis meses»", "k": "d", "ref": "Bancos 25ª Bis"}, {"t": "«…conservar por un periodo no menor a diez años…»", "k": "d", "ref": "Bancos 59ª"}, {"t": "«…los Clientes no residentes en el país y que se encuentren asignados al segmento conocido como banca privada…»", "k": "d", "ref": "Bancos 28ª"}]}};
+const RONDAS={"r321": {"title": "Ronda 3.2.1 · GAFI", "items": [{"pat": "Retos del EBR", "q": "Según la Guía EBR del GAFI para el sector bancario, ¿cuál de los siguientes <b>no</b> es un reto de poner en práctica el EBR?", "o": ["Asignación de responsabilidades en un EBR", "Inclusión financiera", "Costo económico de implementar un EBR", "Desarrollo de un entendimiento común de EBR"], "a": 2, "x": "Los 6 retos: responsabilidades, identificación, evaluación, mitigación, entendimiento común e inclusión financiera.", "ref": "GAFI Sección I D · párr. 17 a 29"}, {"pat": "Retos GAFI vs elementos Basilea", "q": "«Seguimiento continuo» es…", "o": ["Un reto de poner en práctica el EBR (GAFI)", "Un elemento esencial de una sólida gestión del riesgo BC/FT (Basilea)", "Un ajuste del enfoque del supervisor (GAFI)", "Una sección de la Guía EBR"], "a": 1, "x": "Es el elemento 4 de la Sección II de Basilea.", "ref": "Basilea Sección II.4"}, {"pat": "4 ajustes", "q": "El supervisor decide qué combinación de supervisión in situ y extra situ aplicará a cada banco según su riesgo. ¿Qué ajuste es?", "o": ["Intensidad de los controles para su función de autorización", "Tipo de supervisión", "Frecuencia y naturaleza de la supervisión continua", "Intensidad de la supervisión"], "a": 1, "x": "In situ / extra situ es la palabra ancla del ajuste de tipo.", "ref": "GAFI párr. 39 inc. b)"}, {"pat": "4 ajustes", "q": "«El supervisor realiza pruebas a fondo de los sistemas y archivos del banco y entrevista a la alta dirección y al consejo.» ¿Qué ajuste ilustra?", "o": ["Tipo de supervisión", "Frecuencia y naturaleza de la supervisión continua", "Intensidad de la supervisión", "Intensidad de los controles para su función de autorización"], "a": 2, "x": "Son los ejemplos de «una supervisión más estricta» del ajuste de intensidad.", "ref": "GAFI párr. 39 inc. d)"}, {"pat": "4 ajustes", "q": "Ante una denuncia de irregularidades, el supervisor agrega una revisión con fines específicos a sus exámenes periódicos. ¿Qué ajuste es?", "o": ["Frecuencia y naturaleza de la supervisión continua", "Tipo de supervisión", "Intensidad de la supervisión", "Intensidad de los controles para su función de autorización"], "a": 0, "x": "Combinar exámenes periódicos con supervisión con fines específicos por indicadores es el ajuste c).", "ref": "GAFI párr. 39 inc. c)"}, {"pat": "4 ajustes", "q": "En un sector de bajo riesgo, el supervisor basa su decisión de aprobar a un nuevo accionista mayoritario en un examen de la documentación pertinente. ¿Qué ajuste es?", "o": ["Intensidad de la supervisión", "Intensidad de los controles para su función de autorización", "Tipo de supervisión", "Frecuencia de la supervisión"], "a": 1, "x": "Trata de evitar que delincuentes tengan parte significativa o mayoritaria de un banco: función de autorización.", "ref": "GAFI párr. 39 inc. a)"}, {"pat": "Naturaleza de la Guía", "q": "¿Qué efecto jurídico tiene la Guía EBR del GAFI para el sector bancario?", "o": ["Es vinculante para los bancos", "No tiene efecto jurídico vinculante", "Es vinculante sólo para los supervisores", "Es obligatoria desde su publicación en el DOF"], "a": 1, "x": "Se basa en experiencias de países y del sector privado; ayuda a aplicar algunas Recomendaciones.", "ref": "GAFI párr. 8"}, {"pat": "Factores del banco", "q": "Según la Sección III, ¿cuál es uno de los factores que los bancos deben considerar al identificar y evaluar su riesgo de LA/FT?", "o": ["El número de clientes que ya han sido identificados como de alto riesgo", "El costo de su plataforma tecnológica", "El número de empleados certificados", "Su calificación crediticia"], "a": 0, "x": "Otros: naturaleza, escala, diversidad y complejidad · mercados · jurisdicciones · canales · auditoría interna · volumen de operaciones.", "ref": "GAFI párr. 56"}, {"pat": "R.26", "q": "¿Qué Recomendación del GAFI, en su Nota Interpretativa, exige que los propios supervisores adopten un EBR en la supervisión ALA/CFT?", "o": ["Recomendación 1", "Recomendación 10", "Recomendación 26", "Recomendación 40"], "a": 2, "x": "La R.1 fija el alcance del EBR; la NI de la R.26 lo exige a los supervisores.", "ref": "GAFI párr. 16"}, {"pat": "Quién aprueba", "q": "Según la Sección III de la Guía, la evaluación de riesgos del banco debe ser aprobada por…", "o": ["El supervisor", "La alta dirección", "El auditor externo", "La unidad de inteligencia financiera"], "a": 1, "x": "Debe reflejar el apetito por el riesgo y revisarse periódicamente.", "ref": "GAFI párr. 58"}]}, "r322": {"title": "Ronda 3.2.2 · Basilea", "items": [{"pat": "Objetivo: seguridad y solvencia", "q": "Para el Comité de Basilea, una sólida gestión del riesgo BC/FT tiene especial relevancia para la seguridad y solvencia de los bancos, que es…", "o": ["El principal objetivo de la supervisión bancaria", "Uno de los retos del EBR", "El primer elemento esencial", "El objetivo de las unidades de inteligencia financiera"], "a": 0, "x": "Texto del párr. 5. El párr. 2 dice que las políticas PBC/FT son fundamentales para proteger la seguridad y solvencia de los bancos.", "ref": "Basilea párr. 2 y 5"}, {"pat": "Elementos esenciales", "q": "¿Cuál de los siguientes es un elemento esencial de una sólida gestión del riesgo BC/FT según Basilea?", "o": ["Mitigación del riesgo de LA/FT", "Inclusión financiera", "Gestión de la información", "Ajuste de la intensidad de la supervisión"], "a": 2, "x": "Mitigación e inclusión son retos GAFI; el ajuste es del supervisor (GAFI).", "ref": "Basilea Sección II.5"}, {"pat": "Elementos esenciales", "q": "¿Cuántos elementos esenciales enumera la Sección II y cuál es el primero?", "o": ["Cinco; identificación del riesgo", "Seis; evaluación, comprensión, gestión y mitigación de riesgos", "Seis; política de aceptación de clientes", "Cuatro; gobierno corporativo"], "a": 1, "x": "El primero agrupa evaluación del riesgo, gobierno, tres líneas de defensa y seguimiento de transacciones.", "ref": "Basilea Sección II.1"}, {"pat": "Basilea párr. 32 vs DCG", "q": "Al evaluar el riesgo en su política de aceptación de clientes, ¿qué factores menciona Basilea?", "o": ["Antecedentes, profesión, actividad o giro, origen y destino de los recursos, lugar de residencia y Geolocalización", "Antecedentes, ocupación, fuentes de renta y riqueza, país de origen y de residencia, productos utilizados, naturaleza y finalidad de las cuentas", "Nacionalidad, volumen transaccional, antigüedad y saldo promedio", "Antecedentes, ingreso mensual, tipo de cuenta y canal"], "a": 1, "x": "La opción A es la redacción de las DCG (SOFOM 21ª): fue el distractor que más eligió el grupo.", "ref": "Basilea párr. 32"}, {"pat": "Líneas de defensa", "q": "El responsable ejecutivo de PBC/FT y la función de cumplimiento normativo forman parte de la…", "o": ["Primera línea de defensa", "Segunda línea de defensa", "Tercera línea de defensa", "Ninguna línea"], "a": 1, "x": "La segunda línea también puede incluir recursos humanos o tecnología.", "ref": "Basilea párr. 19"}, {"pat": "Líneas de defensa", "q": "La auditoría interna, como tercera línea de defensa, rinde cuentas a…", "o": ["El responsable ejecutivo de PBC/FT", "El comité de auditoría del Consejo o un órgano de vigilancia similar", "La unidad de inteligencia financiera", "Las unidades de negocio"], "a": 1, "x": "Evalúa de forma independiente la gestión y los controles del riesgo.", "ref": "Basilea párr. 26"}, {"pat": "Conservación: 5 vs 10", "q": "¿Qué periodo mínimo de conservación de registros establece Basilea?", "o": ["5 años desde el cese de la relación bancaria o transacción ocasional", "10 años desde la operación", "5 años desde la apertura de la cuenta", "3 años desde el cese"], "a": 0, "x": "Las DCG mexicanas piden 10 años (Bancos 59ª). No las cruces.", "ref": "Basilea párr. 52"}, {"pat": "PEP", "q": "Según Basilea, la diligencia debida reforzada es <b>obligatoria</b> en el caso de…", "o": ["Todos los clientes no residentes", "PEP extranjeras", "Clientes de banca minorista", "Personas morales"], "a": 1, "x": "Para otros clientes de mayor riesgo «podrá ser esencial»; para PEP extranjeras es obligatoria.", "ref": "Basilea párr. 34"}, {"pat": "Aprobación", "q": "Según Basilea, la decisión de establecer o proseguir relaciones comerciales con clientes de alto riesgo debe adoptarla…", "o": ["La alta dirección", "El supervisor", "El comité de auditoría", "La unidad de negocio"], "a": 0, "x": "Es una de las medidas reforzadas de diligencia debida.", "ref": "Basilea párr. 34"}, {"pat": "2ª línea: independencia", "q": "Para evitar conflictos de intereses, el responsable ejecutivo de PBC/FT <b>no</b> deberá…", "o": ["Rendir cuentas a la alta dirección o al Consejo", "Asumir competencias en las líneas de negocio o en la función de auditoría interna", "Notificar las transacciones sospechosas", "Tener acceso al sistema de seguimiento"], "a": 1, "x": "Las otras tres son funciones que sí le corresponden.", "ref": "Basilea párr. 23 a 25 y 30"}]}};
+
+</script>
+<script>
+(function(){
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+window.F4={$, $$, esc};
+/* proyección y recitar */
+function store(k,v){try{if(v===undefined)return localStorage.getItem(k);localStorage.setItem(k,v)}catch(e){return null}}
+const bp=$("#b-proj"), br=$("#b-rec");
+function setP(on){document.body.classList.toggle("proj",on);bp&&bp.setAttribute("aria-pressed",on);store("f4-proj",on?"1":"0")}
+function setR(on){document.body.classList.toggle("recitar",on);br&&br.setAttribute("aria-pressed",on);$$(".rec.shown").forEach(e=>e.classList.remove("shown"))}
+bp&&bp.addEventListener("click",()=>setP(!document.body.classList.contains("proj")));
+br&&br.addEventListener("click",()=>setR(!document.body.classList.contains("recitar")));
+const bpr=$("#b-print"); bpr&&bpr.addEventListener("click",()=>window.print());
+if(store("f4-proj")==="1")setP(true);
+document.addEventListener("click",e=>{const r=e.target.closest(".rec");if(r&&document.body.classList.contains("recitar"))r.classList.add("shown")});
+/* sorters: data-sorter = id en SORTERS */
+function initSorter(box){
+  const S=SORTERS[box.dataset.sorter]; let done=0, good=0;
+  const order=S.items.map((x,i)=>i); if(S.shuffle!==false){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}}
+  box.classList.add("sorter");
+  box.innerHTML=`<div class="top"><span class="eyebrow">${esc(S.prompt||"Clasifica")}</span><span class="score num" data-sc>0 de ${S.items.length}</span></div>`+
+   order.map(i=>{const it=S.items[i];return `<div class="it" data-i="${i}"><div>${it.t}</div><div class="opts">${S.cats.map(c=>`<button type="button" data-k="${c.k}">${esc(c.label)}</button>`).join("")}</div></div>`}).join("")+
+   `<div class="qbtns"><button class="btn ghost" type="button" data-reset>Reiniciar</button></div>`;
+  box.onclick=e=>{
+    if(e.target.closest("[data-reset]")){initSorter(box);return}
+    const b=e.target.closest("button[data-k]"); if(!b)return; const row=b.closest(".it"); if(row.classList.contains("done"))return;
+    const it=S.items[+row.dataset.i]; const right=[].concat(it.k); const ok=right.includes(b.dataset.k);
+    row.classList.add("done"); done++; if(ok)good++;
+    $$("button[data-k]",row).forEach(z=>{z.disabled=true; if(right.includes(z.dataset.k))z.classList.add("right"); else if(z===b)z.classList.add("wrong")});
+    row.insertAdjacentHTML("beforeend",`<div class="fb"><b class="${ok?"tick":"cross"}">${ok?"✓":"✗"}</b> ${it.x||""}${it.ref?` <span class="ref">${esc(it.ref)}</span>`:""}</div>`);
+    $("[data-sc]",box).textContent=`${good} de ${done} · ${S.items.length} en total`;
+  };
+}
+$$("[data-sorter]").forEach(initSorter);
+/* rondas: votación antes de revelar */
+$$("[data-ronda]").forEach(box=>{
+  const R=RONDAS[box.dataset.ronda]; let i=0, rev=new Array(R.items.length).fill(false), pick=new Array(R.items.length).fill(-1);
+  box.classList.add("ronda","card");
+  function draw(){
+    const q=R.items[i];
+    box.innerHTML=`<div class="head"><span class="eyebrow num">${esc(R.title)} · ${i+1} de ${R.items.length}</span><span class="dots">${R.items.map((_,k)=>`<i class="${k<=i?"on":""}"></i>`).join("")}</span></div>
+     ${q.pat?`<span class="pat">Ataca: ${esc(q.pat)}</span>`:""}
+     <p class="qtext">${q.q}</p>
+     <div class="opts">${q.o.map((o,k)=>`<button type="button" class="op${pick[i]===k?" sel":""}${rev[i]&&k===q.a?" right":""}${rev[i]&&pick[i]===k&&k!==q.a?" wrong":""}" data-k="${k}"><b>${"ABCD"[k]}</b><span>${o}</span></button>`).join("")}</div>
+     <div data-fb>${rev[i]?`<div class="qfb"><b class="ok">Respuesta: ${"ABCD"[q.a]}.</b> ${q.x} <span class="ref">${esc(q.ref)}</span></div>`:`<p class="mini sub">Voten primero (mano alzada o chat: A, B, C o D). Luego revela.</p>`}</div>
+     <div class="qbtns"><button class="btn ghost" type="button" data-prev ${i===0?"disabled":""}>Anterior</button>${rev[i]?"":`<button class="btn" type="button" data-rev>Revelar</button>`}<button class="btn ghost" type="button" data-next ${i===R.items.length-1?"disabled":""}>Siguiente</button></div>`;
+  }
+  box.addEventListener("click",e=>{
+    const op=e.target.closest(".op"); if(op&&!rev[i]){pick[i]=+op.dataset.k;draw();return}
+    if(e.target.closest("[data-rev]")){rev[i]=true;draw();return}
+    if(e.target.closest("[data-next]")&&i<R.items.length-1){i++;draw();return}
+    if(e.target.closest("[data-prev]")&&i>0){i--;draw();return}
+  });
+  draw();
+});
+})();
+</script>
+<script></script>
+</body>
+</html>
